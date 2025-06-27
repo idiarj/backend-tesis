@@ -1,0 +1,22 @@
+{
+  "name": "backend-tesis",
+  "version": "1.0.0",
+  "description": "Backend para el trabajo especial de grado de Idiar Chacin y Victoria Acosta",
+  "keywords": [
+    "Tesis",
+    "Tecnologia",
+    "Social",
+    "backend",
+    "URU"
+  ],
+  "license": "ISC",
+  "author": "Idiar Chacin & Victoria Acosta",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
