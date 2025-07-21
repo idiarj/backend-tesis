@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ES2020",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,  // útil para evitar errores entre Windows/Linux
+    "strict": true,                             // opcional pero recomendado para mejor tipado
+    "skipLibCheck": true                        // evita errores en dependencias externas
+  }
+}
