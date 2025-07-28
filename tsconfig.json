@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+  "compilerOptions": { // permite importar archivos .ts directamente
     "module": "NodeNext",
     "target": "ES2020",
     "moduleResolution": "NodeNext",

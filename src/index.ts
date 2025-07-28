@@ -1,14 +1,23 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import { errorMiddleware } from './middlewares/error.middleware.js';
+import { authRouter } from './routes/dispatcher.js';
+import { server_config } from './configs/config.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = server_config.PORT || 3000;
 
-app.get('/', (req: Request, res: Response) => {
-    console.log('Received a request b');
-    res.json({ message: 'Hello, World!' });
-});
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/auth', authRouter);
+
+
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
 

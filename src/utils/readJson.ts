@@ -1,12 +1,14 @@
-
-import { promises as fs } from 'fs';
+import fs from 'fs';
 
 /**
- * Lee un archivo .json y lo devuelve como objeto JS
- * @param {string} filePath - Ruta al archivo .json
- * @returns {Promise<any>} - Objeto JS parseado
+ * Lee un archivo JSON de forma sincrónica usando import.meta.url como base.
+ * @param filePath Ruta relativa al archivo JSON.
+ * @returns Objeto JS parseado con tipado genérico.
  */
-export async function readJson(filePath: string): Promise<any> {
-    const data = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(data);
+export function readJson(filePath: string): Record<string, any> {
+    // console.log(`Reading JSON file from: ${filePath}`);
+    const fullPath = new URL(filePath, import.meta.url);
+    //console.log(`Full path resolved: ${fullPath}`);
+    const content = fs.readFileSync(fullPath, 'utf-8');
+    return JSON.parse(content);
 }

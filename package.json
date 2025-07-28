@@ -19,14 +19,21 @@
     "build": "tsc"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/pg": "^8.15.4",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "argon2": "^0.43.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.6.0",
     "express": "^5.1.0",
-    "mongoose": "^8.16.4",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3",
     "zod": "^4.0.5"
   }
 }
