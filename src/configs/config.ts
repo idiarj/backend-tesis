@@ -1,5 +1,7 @@
+import { readJson } from "../utils/readJson.js";
 import dotenv from "dotenv";
 dotenv.config();
+
 
 
 export const server_config = {
@@ -7,6 +9,7 @@ export const server_config = {
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     CHANGE_PASSWORD_TOKEN_SECRET: process.env.CHANGE_PASSWORD_TOKEN_SECRET,
     DEPLOYED_SERVER_FLAG: process.env.DEPLOYED_SERVER_FLAG === "true" ? true : false,
+    CORS_CONFIG: readJson("../configs/cors_config.json"),
 }
 
 export const db_config = {
@@ -18,6 +21,7 @@ export const db_config = {
     DB_SSL: process.env.DB_SSL === "true" ? { rejectUnauthorized: true } : { rejectUnauthorized: false },
     NEON_CONNECTION_STRING: process.env.NEON_CONNECTION_STRING,
     DEPLOYED_DB_FLAG: process.env.DEPLOYED_DB_FLAG === "true" ? true : false,
+    DB_QUERYS: readJson("../configs/querys.json"),
 }
 
 console.log('Configs loaded')

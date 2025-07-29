@@ -1,6 +1,5 @@
 {
     "registerUser": "INSERT INTO usuario (nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-    "getUsername": "SELECT nom_usuario FROM usuario WHERE LOWER(nom_usuario) = LOWER($1)",
-    "getUserPassword": "SELECT pwd_usuario FROM usuario WHERE LOWER(nom_usuario) = LOWER($1)",
-    "getUserEmail": "SELECT email_usuario FROM usuario WHERE LOWER(email_usuario) = LOWER($1)"
+    "getUsername": "SELECT id_usuario, nom_usuario, email_usuario, pwd_usuario FROM usuario WHERE LOWER(nom_usuario) = LOWER($1)",
+    "getUserEmail": "SELECT Id_usuario, nom_usuario, email_usuario, pwd_usuario FROM usuario WHERE LOWER(email_usuario) = LOWER($1)"
 }

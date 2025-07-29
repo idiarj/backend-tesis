@@ -3,6 +3,7 @@
     "module": "NodeNext",
     "target": "ES2020",
     "moduleResolution": "NodeNext",
+    "allowJs": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "esModuleInterop": true,

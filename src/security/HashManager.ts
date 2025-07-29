@@ -2,8 +2,8 @@ import argon2 from 'argon2';
 
 
 
-export class CryptManager {
-    static async hashPassword(password: string): Promise<string> {
+export class HashManager {
+    static async hashPassword({password}: {password: string}): Promise<string> {
         try {
             const hashedPassword = await argon2.hash(password, {
                                         memoryCost: 65536, // 64 MB
@@ -18,7 +18,7 @@ export class CryptManager {
         }
     }
 
-    static async verifyPassword(hashedPassword: string, password: string): Promise<boolean> {
+    static async verifyPassword({hashedPassword, password }: {hashedPassword: string, password: string}): Promise<boolean> {
         try {
             const isValid = await argon2.verify(hashedPassword, password);
             return isValid;

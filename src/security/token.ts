@@ -1,5 +1,7 @@
-import jsonwebtoken, { SignOptions, JsonWebTokenError} from 'jsonwebtoken';
+import jsonwebtoken, { SignOptions } from 'jsonwebtoken';
 import { InternalError } from '../errors/InternalError.js';
+
+const { JsonWebTokenError } = jsonwebtoken
 
 
 export class Token{
@@ -7,9 +9,9 @@ export class Token{
     static generateToken({payload, secret, options}: {payload: object, secret: string, options?: SignOptions}): string{
         try {
             console.log(`[JWT] Generating jsonweb token...`)
-            console.log(`[JWT] With payload: ${payload},`)
+            console.log(`[JWT] With payload: ${JSON.stringify(payload)},`)
             console.log(`[JWT] With secret: ${secret}`)
-            console.log(`[JWT] And options: ${options}`)
+            console.log(`[JWT] And options: $${JSON.stringify(options)}`)
             const token = jsonwebtoken.sign(payload, secret, options);
             console.log('[JWT] Token succesfully generated');
             return token;

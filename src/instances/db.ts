@@ -2,8 +2,6 @@ import { readJson } from "../utils/readJson.js";
 import { pgManager } from "../database/pgManager.js";
 import { db_config } from "../configs/config.js";
 
-
-const querys = readJson("../configs/querys.json");
 // console.log("Querys loaded:", querys);
 
 const localConfig = {
@@ -20,15 +18,12 @@ const deployedConfig = {
     ssl: db_config.DB_SSL
 };
 
-// console.log("Local DB Config:", localConfig);
-// console.log("Deployed DB Config:", deployedConfig);
 console.log("Estoy con la base de datos desplegada?", db_config.DEPLOYED_DB_FLAG);
-
 const config = db_config.DEPLOYED_DB_FLAG ? deployedConfig : localConfig;   
 
 
 
 export const db = new pgManager({
-    querys,
+    querys: db_config.DB_QUERYS,
     config
 });  

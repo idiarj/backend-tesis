@@ -2,6 +2,7 @@ import { User, LoginCredentials } from "../interfaces/user.interface.js"
 import { db } from "../instances/db.js";
 import { DatabaseError } from "../errors/DatabaseError.js";
 import { BaseError } from "../errors/BaseError.js";
+import { ValidationError } from "../errors/ValidationError.js";
 
 export class UserModel {
 
@@ -38,7 +39,7 @@ export class UserModel {
         }
     }
 
-    static async validateUser({username}: { username: string }) {
+    static async validateUser({username}: { username: string }): Promise<LoginCredentials | null> {
         try {
             console.log("[UserModel] Fetching user by username...");
             const key = "getUsername";
@@ -48,7 +49,7 @@ export class UserModel {
             const params = [username];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rows.length === 0) {
-                return null; // No user found
+                return null;
             }
             return result.rows[0]; // Return the found user
         } catch (error) {
@@ -58,37 +59,32 @@ export class UserModel {
             }else if (error instanceof Error) {
                 throw new DatabaseError('Internal server error, please try again later', 500, error.message);
             }
+            return null;
         }
     }
 
     static async validateEmail({email}: { email: string }): Promise<LoginCredentials | null> {
         try {
             console.log("[UserModel] Fetching user by email...");
-            const key = "getUserByEmail";
+            const key = "getUserEmail";
             if(db.querys[key] === undefined) {
                 throw new DatabaseError('Internal server error, please try again later', 500, `Query for key ${key} not found.`);
             }
             const params = [email];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rows.length === 0) {
+                
                 return null; // No user found
             }
             return result.rows[0]; // Return the found user
         } catch (error) {
             //console.error("[UserModel] Error fetching user by email:", error);
-            if (error instanceof Error) {
-                throw new DatabaseError('Internal server error, please try again later', 500, error.message);
-            } else {
-                throw new DatabaseError('Internal server error, please try again later', 500, 'Unknown error');
+            if (error instanceof BaseError) {
+                throw error; // Re-throw known errors
+            } else if (error instanceof Error) {
+                throw new DatabaseError('Internal server error, please try again later', 500, error.message || 'Unknown error');
             }
-        }
-    }
-
-    static async validatePassword(){
-        try {
-            
-        } catch (error) {
-            
+            return null; // Ensure a return value in all code paths
         }
     }
 

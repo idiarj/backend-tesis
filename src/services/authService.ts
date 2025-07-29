@@ -2,7 +2,7 @@ import { UserModel } from "../models/userModel.js";
 import { User, LoginCredentials } from "../interfaces/user.interface.js";
 import { responseSuccess } from "../interfaces/status.interface.js";
 import { ValidationError } from "../errors/ValidationError.js";
-import { CryptManager } from "../security/CryptManager.js";
+import { HashManager } from "../security/HashManager.js";
 
 
 export class AuthService {
@@ -25,7 +25,7 @@ export class AuthService {
             throw new ValidationError('Email already registered', 400);
         }
 
-        const hashedPassword = await CryptManager.hashPassword(pwd_usuario);
+        const hashedPassword = await HashManager.hashPassword({password: pwd_usuario});
 
         console.log("[AuthService] User and email do not exist, proceeding with registration...");
 
@@ -43,9 +43,20 @@ export class AuthService {
 
     static async loginUser(LoginCredentials: LoginCredentials): Promise<responseSuccess>{
         // TODO: Login implementation
+        console.log(`[AuthService] Login user with credentials ${JSON.stringify(LoginCredentials)}`)
+        const {nom_usuario, pwd_usuario} = LoginCredentials
+        const valid = await UserModel.validateUser({username: nom_usuario})
+        if(!valid){
+            throw new ValidationError('Credenciales incorrectas.', 400, 'El nombre de usuario no esta registrado.');
+        }
+        const valid_pwd = await HashManager.verifyPassword({hashedPassword: valid?.pwd_usuario, password: pwd_usuario })
+        if(!valid_pwd){
+            throw new ValidationError('Credenciales incorrectas.', 400, 'La contrasena es incorrecta.')
+        }
         return {
             success: true,
-            message: "User logged in successfully"
+            message: "User logged in successfully",
+            data: valid
         }
     }
 
