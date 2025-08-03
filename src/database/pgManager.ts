@@ -2,11 +2,15 @@ import { Pool, QueryResult, QueryResultRow, PoolClient, PoolConfig } from 'pg';
 import { pgOptions } from '../interfaces/pg-manager.interface.js';
 import { DatabaseError } from '../errors/DatabaseError.js';
 import { ConnectionError } from '../errors/ConnectionError.js';
+import { getLogger } from '../utils/logger.js';
+
+
+const logger = getLogger('PG');
 
 
 export class pgManager {
-    public querys: Record<string, string>;
-    public config: PoolConfig;
+    private querys: Record<string, string>;
+    private config: PoolConfig;
     private pool: Pool;
 
     constructor({querys, config} : pgOptions) {
@@ -52,9 +56,9 @@ export class pgManager {
         }
     
         try {
-            console.log(`[PG] Executing query: ${queryKey} with params: ${JSON.stringify(params)}`);
+            logger.info(`Executing query: ${queryKey} with params: ${JSON.stringify(params)}`);
             const result = await client.query<T>(query, params);
-            console.log(`[PG] Query executed successfully: ${queryKey}`);
+            logger.info(`Query executed successfully: ${queryKey}`);
             return result; // Only the rows are returned
         } catch (error) {
             throw new DatabaseError('Internal server error', 500, `Execution for query ${queryKey} failed: ${String(error)}`);

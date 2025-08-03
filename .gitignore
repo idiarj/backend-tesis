@@ -10,3 +10,7 @@
 
 ### http
 *.http
+
+### logs
+*-audit.json
+*.log

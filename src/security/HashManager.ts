@@ -1,10 +1,15 @@
 import argon2 from 'argon2';
 import { BaseError } from '../errors/BaseError.js';
+import { getLogger } from '../utils/logger.js';
+
+const log = getLogger('HASH');
 
 
 export class HashManager {
     static async hashData({data}: {data: string}): Promise<string> {
         try {
+            log.debug("Hashing data...");
+            log.debug("Data to hash:", data);
             const hashedData = await argon2.hash(data, {
                                         memoryCost: 65536, // 64 MB
                                         timeCost: 4, // 4 iterations
@@ -20,9 +25,9 @@ export class HashManager {
 
     static async verifyData({ hashedData, data }: {hashedData: string, data: string}): Promise<boolean> {
         try {
-            console.log("[HashManager] Verifying password...");
-            console.log("Hashed Data:", hashedData);
-            console.log("Data to verify:", data);
+            log.debug("Verifying password...");
+            log.debug("Hashed Data:", hashedData);
+            log.debug("Data to verify:", data);
             const isValid = await argon2.verify(hashedData, data);
             return isValid;
         } catch (error) {

@@ -1,9 +1,10 @@
 import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
 import { MailAuth, MailPayload } from '../interfaces/mailer.interface.js';
 import { MailerError } from '../errors/MailerError.js';
-import { InternalError } from '../errors/InternalError.js';
+import { getLogger } from '../utils/logger.js';
 
 
+const logger = getLogger('MAILER');
 
 export class Mailer {
   private auth: MailAuth;
@@ -39,9 +40,8 @@ export class Mailer {
       };
 
       const info = await transporter.sendMail(mailOptions);
-      console.log('Correo enviado con éxito:', info.response);
+      logger.info(`Correo enviado con éxito: ${info.response}`);
     } catch (error) {
-      console.error('Error enviando correo:', error);
       throw new MailerError('Error al enviar el correo', 500, error instanceof Error ? error.message : 'Unknown error');
     }
   }
@@ -60,9 +60,8 @@ export class Mailer {
       };
 
       const info = await transporter.sendMail(mailOptions);
-      console.log('Correo con template enviado con éxito:', info.response);
+      logger.info(`Template email sent successfully: ${info.response}`);``
     } catch (error) {
-      console.error('Error enviando template:', error);
       throw new MailerError('Error al enviar el correo.', 500, error instanceof Error ? error.message : 'Unknown error');
     }
   }

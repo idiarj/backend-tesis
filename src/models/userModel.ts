@@ -2,35 +2,27 @@ import { User, LoginCredentials } from "../interfaces/user.interface.js"
 import { db } from "../instances/db.js";
 import { DatabaseError } from "../errors/DatabaseError.js";
 import { BaseError } from "../errors/BaseError.js";
+import { getLogger } from "../utils/logger.js";
 
+const logger = getLogger('UserModel');
 
 export class UserModel {
 
-    // private static db: any;
 
-    // constructor() {
-    //     UserModel.db = db; // Initialize the db instance
-    // }
 
 
     static async insertUser({nom_usuario, pwd_usuario, email_usuario, tlf_usuario, id_perfil}: User): Promise<User> {
         try {
-            console.log(`[UserModel] Inserting user ${nom_usuario}...`);
+            logger.debug(`Inserting user ${nom_usuario} into the database...`);
             const key = "registerUser";
-            if(db.querys[key] === undefined) {
-                console.error("[UserModel] Query for key not found:", key);
-                throw new DatabaseError('Internal server error, please try again later', 500, `Query for key ${key} not found.`);
-            }
             id_perfil = id_perfil || 1;
             const params = [nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rows.length === 0) {
-                console.log("[UserModel] No rows returned from insert query");
                 throw new DatabaseError("User registration failed", 500, "No rows returned from insert query");
             }
             return result.rows[0];
         } catch (error) {
-            //console.error("[UserModel] Error inserting user:", error);
             if (error instanceof BaseError) {
                 throw error;
             } else {
@@ -41,7 +33,7 @@ export class UserModel {
 
     static async validateUser({ nom_usuario}: {nom_usuario: string}): Promise<User | null> {
         try {
-            console.log("[UserModel] Validating user...");
+            logger.debug(`Validating user ${nom_usuario}...`);
             const key = "validateUser";
 
             const params = [nom_usuario];
@@ -49,6 +41,7 @@ export class UserModel {
             if (result.rows.length === 0) {
                 return null; // No user found
             }
+            logger.debug(`User ${nom_usuario} found: ${JSON.stringify(result.rows[0])}`);
             return result.rows[0]; // Return the found user
         } catch (error) {
             //console.error("[UserModel] Error validating user:", error);
@@ -64,7 +57,7 @@ export class UserModel {
 
     static async validateEmail({ email }: { email: string }): Promise<User | null> {
         try {
-            console.log("[UserModel] Validating email...");
+            logger.debug(`Validating email ${email}...`);
             const key = "validateEmail";
 
             const params = [email];
@@ -72,6 +65,7 @@ export class UserModel {
             if (result.rows.length === 0) {
                 return null; // No user found
             }
+            logger.debug(`Email ${email} found: ${JSON.stringify(result.rows[0])}`);
             return result.rows[0]; // Return the found user
         } catch (error) {
             //console.error("[UserModel] Error validating email:", error);
@@ -85,7 +79,7 @@ export class UserModel {
 
     static async checkCredentials({ identifier_usuario, pwd_usuario }: LoginCredentials): Promise<User | null> {
         try {
-            console.log("[UserModel] Checking user credentials...");
+            logger.debug(`Checking credentials for user ${identifier_usuario}...`);
             const key = "checkUserCredentials";
 
             const params = [identifier_usuario];
@@ -93,7 +87,7 @@ export class UserModel {
             if (result.rows.length === 0) {
                 return null; // No user found
             }
-            console.log("[UserModel] User credentials found:", result.rows[0]);
+            logger.debug(`User credentials found for ${identifier_usuario}: ${JSON.stringify(result.rows[0])}`);
             return result.rows[0]; // Return the found user
         } catch (error) {
             console.error("[UserModel] Error checking credentials:", error);
@@ -107,7 +101,7 @@ export class UserModel {
 
     static async getUserById({id_usuario}: { id_usuario: number }): Promise<User | null> {
         try {
-            console.log("[UserModel] Fetching user by ID...");
+            logger.debug(`Fetching user by ID: ${id_usuario}`);
             const key = "getUserById";
 
             const params = [id_usuario];
@@ -115,6 +109,7 @@ export class UserModel {
             if (result.rows.length === 0) {
                 return null; // No user found
             }
+            logger.debug(`User found by ID ${id_usuario}: ${JSON.stringify(result.rows[0])}`);
             return result.rows[0]; // Return the found user
         } catch (error) {
             //console.error("[UserModel] Error fetching user by ID:", error);
@@ -128,14 +123,15 @@ export class UserModel {
 
     static async updateUser({nom_usuario, pwd_usuario, email_usuario, tlf_usuario}: User): Promise<User> {
         try {
-            console.log("[UserModel] Updating user...");
+            logger.debug(`Updating user ${nom_usuario}...`);
             const key = "updateUser";
 
             const params = [nom_usuario, email_usuario, pwd_usuario, tlf_usuario];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rows.length === 0) {
-                throw new Error("User update failed");
+                throw new DatabaseError('Internal server error, please try again later', 500, "User update failed");
             }
+            logger.debug(`User ${nom_usuario} updated successfully: ${JSON.stringify(result.rows[0])}`);
             return result.rows[0]; // Return the updated user
         } catch (error) {
             //console.error("[UserModel] Error updating user:", error);
@@ -149,14 +145,14 @@ export class UserModel {
 
     static async deleteUser({id_usuario}: { id_usuario: number }): Promise<void> {
         try {
-            console.log("[UserModel] Deleting user...");
+            logger.debug(`Deleting user ${id_usuario}...`);
             const key = "deleteUser";
             const params = [id_usuario];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rowCount === 0) {
                 throw new Error("User deletion failed");
             }
-            console.log("[UserModel] User deleted successfully");
+            logger.debug(`User ${id_usuario} deleted successfully`);
         } catch (error) {
             //console.error("[UserModel] Error deleting user");
             if (error instanceof BaseError) {
@@ -170,7 +166,7 @@ export class UserModel {
     static async updatePassword({email_usuario, id_token, newPassword}: { email_usuario: string, id_token: number, newPassword: string }): Promise<void> {
         const client = await db.beginTransaction();
         try {
-            console.log("[UserModel] Updating user password...");
+            logger.debug(`Updating user password for email: ${email_usuario}...`);
 
             const key1 = "updatePassword";
             const key2 = 'updatePasswordRecoveryTokenUsage';
@@ -180,8 +176,8 @@ export class UserModel {
 
             await db.executeQuery({ queryKey: key1, params: params1, client });
             await db.executeQuery({queryKey: key2, params: params2, client})
-            console.log("[UserModel] Password updated successfully");
-            await db.commitTransaction(client); 
+            logger.debug(`Password updated successfully for email: ${email_usuario}`);
+            await db.commitTransaction(client);
         } catch (error) {
             //console.error("[UserModel] Error updating user password:", error);
             await db.rollbackTransaction(client);
@@ -197,15 +193,15 @@ export class UserModel {
     static async verifyPasswordRecoveryToken({email_usuario}: {email_usuario: string}){
         const client = await db.beginTransaction();
         try {
-            console.log("[UserModel] Verifying password recovery for email:", email_usuario);
+            logger.debug(`Verifying password recovery for email: ${email_usuario}`);
             const resultRawQuery = await db.executeRawQuery(`SELECT id_usuario FROM usuario WHERE email_usuario = $1`, [email_usuario], client);
             if (resultRawQuery.rows.length === 0) {
-                console.log("[UserModel] No user found with the provided email.");
+                logger.debug(`No user found with the provided email: ${email_usuario}`);
                 return null; // No user found with the provided email
             }
-            console.log(`[UserModel] User found with the provided email: ${JSON.stringify(resultRawQuery.rows[0])}`);
+            logger.debug(`User found with the provided email: ${JSON.stringify(resultRawQuery.rows[0])}`);
             const {id_usuario} = resultRawQuery.rows[0];
-            console.log("[UserModel] User found:", id_usuario);
+            logger.debug(`User found: ${id_usuario}`);
             // Now check for the password recovery token
             const key = "verifyPasswordRecoveryToken";
             const params = [id_usuario];
@@ -227,15 +223,15 @@ export class UserModel {
 
     static async insertPasswordRecoveryToken({id_usuario, password_recovery_token}: { id_usuario: number | undefined, password_recovery_token: string }): Promise<void> {
         try {
-            console.log("[UserModel] Inserting password recovery token...");
+            logger.debug(`Inserting password recovery token for user ID: ${id_usuario}`);
             const key = "insertPasswordRecoveryToken";
-            console.log(`[UserModel] Token that is going to be inserted in the DB: ${password_recovery_token}`);
+            logger.debug(`Token that is going to be inserted in the DB: ${password_recovery_token}`);
             const params = [id_usuario, password_recovery_token];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rowCount === 0) {
                 throw new DatabaseError("Internal Server Error: Password recovery token insertion failed", 500, "No rows affected during token insertion");
             }
-            console.log("[UserModel] Password recovery token inserted successfully");
+            logger.debug(`Password recovery token inserted successfully for user ID: ${id_usuario}`);
         } catch (error) {
             //console.error("[UserModel] Error inserting password recovery token:", error);
             if (error instanceof BaseError) {
