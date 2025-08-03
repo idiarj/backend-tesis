@@ -9,5 +9,5 @@ authRouter.post("/logout", AuthController.logout);
 
 
 
-// authRouter.post("/forgot-password", callbackForgotPassword);
-// authRouter.post("/reset-password", callbackResetPassword);
+authRouter.post("/forgot-password", AuthController.verifyEmailForPasswordReset);
+authRouter.post("/reset-password", AuthController.resetPassword);

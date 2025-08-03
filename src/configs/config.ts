@@ -1,4 +1,5 @@
 import { readJson } from "../utils/readJson.js";
+import { cors_config } from "./cors_config.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -6,10 +7,10 @@ dotenv.config();
 
 export const server_config = {
     PORT: process.env.PORT || 3000,
-    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
-    CHANGE_PASSWORD_TOKEN_SECRET: process.env.CHANGE_PASSWORD_TOKEN_SECRET,
+    ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET,
+    RECOVER_PASSWORD_TOKEN_SECRET: process.env.JWT_PASSWORD_RECOVERY_TOKEN_SECRET,
     DEPLOYED_SERVER_FLAG: process.env.DEPLOYED_SERVER_FLAG === "true" ? true : false,
-    CORS_CONFIG: readJson("../configs/cors_config.json"),
+    CORS_CONFIG: cors_config
 }
 
 export const db_config = {
@@ -24,6 +25,11 @@ export const db_config = {
     DB_QUERYS: readJson("../configs/querys.json"),
 }
 
+
+export const mail_config = {
+    APPLICATION_PASSWORD_GMAIL: process.env.APPLICATION_PASSWORD_GMAIL || "",
+}
+
 console.log('Configs loaded')
-// console.log('Server Config:', server_config);
+//console.log('Server Config:', server_config);
 // console.log('Database Config:', db_config);

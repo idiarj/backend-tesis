@@ -1,5 +1,11 @@
 {
     "registerUser": "INSERT INTO usuario (nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-    "getUsername": "SELECT id_usuario, nom_usuario, email_usuario, pwd_usuario FROM usuario WHERE LOWER(nom_usuario) = LOWER($1)",
-    "getUserEmail": "SELECT Id_usuario, nom_usuario, email_usuario, pwd_usuario FROM usuario WHERE LOWER(email_usuario) = LOWER($1)"
+    "validateUser": "SELECT nom_usuario FROM usuario WHERE nom_usuario = $1",
+    "validateEmail": "SELECT id_usuario, email_usuario FROM usuario WHERE email_usuario = $1",
+    "checkUserCredentials": "SELECT id_usuario, nom_usuario, email_usuario, pwd_usuario FROM usuario WHERE nom_usuario = $1 OR email_usuario = $1",
+    "getUserById": "SELECT * FROM usuario WHERE id_usuario = $1",
+    "updatePassword": "UPDATE usuario SET pwd_usuario = $1 WHERE email_usuario = $2 RETURNING id_usuario",
+    "insertPasswordRecoveryToken": "INSERT INTO recuperacion_contrasena_token (id_usuario, token_hash, expira_en) VALUES ($1, $2, NOW() + INTERVAL '15 minutes') RETURNING *",
+    "updatePasswordRecoveryTokenUsage": "UPDATE recuperacion_contrasena_token SET usado = true WHERE id_token_recup= $1",
+    "verifyPasswordRecoveryToken": "SELECT * FROM recuperacion_contrasena_token WHERE usado = false AND expira_en > NOW() AND id_usuario = $1"
 }

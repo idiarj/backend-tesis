@@ -1,6 +1,5 @@
 import z from 'zod';
 
-
 export interface User {
     id_usuario?: number;
     nom_usuario: string;
@@ -10,13 +9,11 @@ export interface User {
     id_perfil?: number;
 }
 
-
-
 export interface LoginCredentials {
-    nom_usuario: string;
-    email_usuario?: string;
     pwd_usuario: string;
+    identifier_usuario: string; // This can be either nom_usuario or email_usuario
 }
+
 
 
 export const userSchema = z.object({

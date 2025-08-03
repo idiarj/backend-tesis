@@ -2,4 +2,11 @@
 /node_modules
 
 ### workspace files
-backend-tesis.code-workspace
+.code-workspace.code-workspace
+
+
+### env
+.env
+
+### http
+*.http

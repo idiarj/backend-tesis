@@ -1,29 +1,32 @@
 import argon2 from 'argon2';
-
+import { BaseError } from '../errors/BaseError.js';
 
 
 export class HashManager {
-    static async hashPassword({password}: {password: string}): Promise<string> {
+    static async hashData({data}: {data: string}): Promise<string> {
         try {
-            const hashedPassword = await argon2.hash(password, {
+            const hashedData = await argon2.hash(data, {
                                         memoryCost: 65536, // 64 MB
                                         timeCost: 4, // 4 iterations
                                         parallelism: 1, // 1 thread
                                         hashLength: 32, // 32 bytes
                                         type: argon2.argon2id, // Use Argon2id for better security
                                     });
-            return hashedPassword;
+            return hashedData;
         } catch (error) {
-            throw new Error(`Error hashing password: ${error instanceof Error ? error.message : String(error)}`);
+            throw new BaseError(`Error hashing data: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
-    static async verifyPassword({hashedPassword, password }: {hashedPassword: string, password: string}): Promise<boolean> {
+    static async verifyData({ hashedData, data }: {hashedData: string, data: string}): Promise<boolean> {
         try {
-            const isValid = await argon2.verify(hashedPassword, password);
+            console.log("[HashManager] Verifying password...");
+            console.log("Hashed Data:", hashedData);
+            console.log("Data to verify:", data);
+            const isValid = await argon2.verify(hashedData, data);
             return isValid;
         } catch (error) {
-            throw new Error(`Error verifying password: ${error instanceof Error ? error.message : String(error)}`);
+            throw new BaseError(`Error verifying password: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 }

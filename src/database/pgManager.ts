@@ -42,7 +42,7 @@ export class pgManager {
     async executeQuery<T extends QueryResultRow = any>({queryKey = '', params = [], client}: {queryKey: string, params: any[], client?: PoolClient}): Promise<QueryResult<T>> {
         const query = this.querys[queryKey];
         if (!query) {
-            throw new Error(`Query not found: ${queryKey}`);
+            throw new DatabaseError('Internal server error, please try again later', 500, `Query for key ${query} not found.`);
         }
     
         const shouldRelease = !client;

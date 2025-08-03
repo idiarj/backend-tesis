@@ -1,8 +1,5 @@
-import jsonwebtoken, { SignOptions } from 'jsonwebtoken';
-import { InternalError } from '../errors/InternalError.js';
-
-const { JsonWebTokenError } = jsonwebtoken
-
+import jsonwebtoken, { SignOptions, JwtPayload } from 'jsonwebtoken';
+import { JsonWebTokenError } from '../errors/JsonWebTokenError.js';
 
 export class Token{
 
@@ -17,22 +14,20 @@ export class Token{
             return token;
         } catch (error) {
             if(error instanceof Error){
-                throw new InternalError('Internal server error', 500, error.message || 'Unknown error') 
+                throw new JsonWebTokenError('Internal server error', 500, `Error generating token: ${error.message}`); 
             }
-            throw new InternalError('Internal server error', 500, 'Unknown error');
+            throw new JsonWebTokenError('Internal server error', 500, `Error generating token: Unknown error`);
         }
     }
 
-    static verifyToken({token, secret}: {token: string, secret: string}): string | object {
+    static verifyToken({token, secret}: {token: string, secret: string}): JwtPayload {
         try {
-            const decoded = jsonwebtoken.verify(token, secret);
+            const decoded = jsonwebtoken.verify(token, secret) as JwtPayload;
             console.log('[JWT] Token successfully verified');
             return decoded;
         } catch (error) {
-            if (error instanceof Error) {
-                throw new JsonWebTokenError('Invalid token');
-            }
-            throw new JsonWebTokenError('Invalid token');
+            console.error('[JWT] Error verifying token:', error);
+            throw new JsonWebTokenError('Invalid or expired token', 401, `Error verifying token: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
 }
