@@ -8,10 +8,10 @@ const app = express();
 
 
 const PORT = server_config.PORT || 3000;
-
+const cors_config = server_config.CORS_CONFIG;
 const backend_url = server_config.DEPLOYED_SERVER_FLAG ? `https://backend-tesis-vkie.onrender.com on port ${PORT}` : `http://localhost:${PORT}`;
-
-app.use(cors(server_config.CORS_CONFIG));
+console.log(`Cors config:`, cors_config);
+app.use(cors(cors_config));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,28 +29,3 @@ app.use(errorMiddleware);
 app.listen(PORT, () => {
     console.log(`Server running on ${backend_url}`);
 });
-
-function printRoutes(app: express.Express) {
-    if (!app._router || !app._router.stack) {
-        console.log('No routes registered.');
-        return;
-    }
-    const routes: string[] = [];
-    app._router.stack.forEach((middleware: any) => {
-        if (middleware.route) {
-            // Route registered directly on the app
-            routes.push(middleware.route.path);
-        } else if (middleware.name === 'router' && middleware.handle.stack) {
-            // Router middleware
-            middleware.handle.stack.forEach((handler: any) => {
-                if (handler.route) {
-                    routes.push(handler.route.path);
-                }
-            });
-        }
-    });
-    console.log('Registered routes:', routes);
-}
-
-printRoutes(app);
-
