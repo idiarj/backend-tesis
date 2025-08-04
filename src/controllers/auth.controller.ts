@@ -87,6 +87,7 @@ export class AuthController {
     static async verifyEmailForPasswordReset(req: Request, res: Response, next: NextFunction) {
         try {
             logger.info('Verifying email for password reset...');
+            logger.debug(`Request body: ${JSON.stringify(req.body)}`);
             const { email_usuario } = req.body;
             if (!email_usuario) {
                 throw new ValidationError('Email is required', 400);

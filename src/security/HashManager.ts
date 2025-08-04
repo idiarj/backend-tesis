@@ -9,7 +9,7 @@ export class HashManager {
     static async hashData({data}: {data: string}): Promise<string> {
         try {
             log.debug("Hashing data...");
-            log.debug("Data to hash:", data);
+            log.debug(`Data to hash: ${data}`);
             const hashedData = await argon2.hash(data, {
                                         memoryCost: 65536, // 64 MB
                                         timeCost: 4, // 4 iterations
@@ -26,8 +26,8 @@ export class HashManager {
     static async verifyData({ hashedData, data }: {hashedData: string, data: string}): Promise<boolean> {
         try {
             log.debug("Verifying password...");
-            log.debug("Hashed Data:", hashedData);
-            log.debug("Data to verify:", data);
+            log.debug(`Hashed data: ${hashedData}`);
+            log.debug(`Data to verify: ${data}`);
             const isValid = await argon2.verify(hashedData, data);
             return isValid;
         } catch (error) {
