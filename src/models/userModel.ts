@@ -4,7 +4,7 @@ import { DatabaseError } from "../errors/DatabaseError.js";
 import { BaseError } from "../errors/BaseError.js";
 import { getLogger } from "../utils/logger.js";
 
-const logger = getLogger('UserModel');
+const logger = getLogger('USER');
 
 export class UserModel {
 
@@ -31,7 +31,7 @@ export class UserModel {
         }
     }
 
-    static async validateUser({ nom_usuario}: {nom_usuario: string}): Promise<User | null> {
+    static async validateUser({ nom_usuario}: {nom_usuario: string}) {
         try {
             logger.debug(`Validating user ${nom_usuario}...`);
             const key = "validateUser";
@@ -70,6 +70,27 @@ export class UserModel {
         } catch (error) {
             //console.error("[UserModel] Error validating email:", error);
             if (error instanceof BaseError) {
+                throw error;
+            } else {
+                throw new DatabaseError('Internal server error, please try again later', 500, 'Unknown error');
+            }
+        }
+    }
+
+    static async validatePhoneNumber({ tlf_usuario }: { tlf_usuario: string }) {
+        try {
+            logger.debug(`Validating phone number ${tlf_usuario}...`);
+            const key = "validatePhoneNumber";
+
+            const params = [tlf_usuario];
+            const result = await db.executeQuery({ queryKey: key, params });
+            if (result.rows.length === 0) {
+                return null; // No user found
+            }
+            logger.debug(`Phone number ${tlf_usuario} found: ${JSON.stringify(result.rows[0])}`);
+            return result.rows[0]; // Return the found user
+        } catch (error) {
+            if(error instanceof BaseError) {
                 throw error;
             } else {
                 throw new DatabaseError('Internal server error, please try again later', 500, 'Unknown error');

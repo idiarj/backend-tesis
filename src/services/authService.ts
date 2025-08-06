@@ -6,6 +6,7 @@ import { HashManager } from "../security/HashManager.js";
 import { mail } from "../instances/mail.js";
 import { mail_config } from "../configs/config.js";
 import { getLogger } from "../utils/logger.js";
+import { AuthError } from "../errors/AuthError.js";
 
 const logger = getLogger('AuthService')
 
@@ -18,17 +19,21 @@ export class AuthService {
         const existingUser = await UserModel.validateUser({ nom_usuario });
         console.log(existingUser)
         if (existingUser) {
-            throw new ValidationError('User already exists', 400);
+            throw new AuthError('User already exists', 400, 'Username already registered');
         }
 
         const existingEmail = await UserModel.validateEmail({ email: email_usuario });
         if (existingEmail) {
-            throw new ValidationError('Email already registered', 400);
+            throw new AuthError('Email already registered', 400, 'Email already associated with an account');
         }
 
-        const hashedPassword = await HashManager.hashData({data: pwd_usuario});
+        const existingPhone = await UserModel.validatePhoneNumber({ tlf_usuario });
+        if (existingPhone) {
+            throw new AuthError('Phone number already registered', 400, 'Phone number already associated with an account');
+        }
+        logger.debug(`User ${nom_usuario}, email ${email_usuario} and phone ${tlf_usuario} are not already registered, proceeding with registration...`);
 
-        logger.debug('Username and email are not already registed, proceeding with registration...')
+        const hashedPassword = await HashManager.hashData({data: pwd_usuario});
 
         await UserModel.insertUser({
             nom_usuario,
@@ -47,17 +52,17 @@ export class AuthService {
     static async loginUser(LoginCredentials: LoginCredentials): Promise<responseSuccess>{
         // TODO: Login implementation
         const { identifier_usuario, pwd_usuario } = LoginCredentials;
-        const credentials = await UserModel.checkCredentials({ identifier_usuario, pwd_usuario });
         logger.info(`Starting login process for user: ${identifier_usuario}`);
+        const credentials = await UserModel.checkCredentials({ identifier_usuario, pwd_usuario });
         if (!credentials) {
-            throw new ValidationError('Credenciales incorrectas', 401, `User with identifier ${identifier_usuario} not found.`);
+            throw new AuthError('Credenciales incorrectas', 401, `User with identifier ${identifier_usuario} not found.`);
         }
         const validPwd = await HashManager.verifyData({
             hashedData: credentials.pwd_usuario,
             data: pwd_usuario
         })
         if (!validPwd) {
-            throw new ValidationError('Credenciales incorrectas', 401, `Invalid password for user with identifier ${identifier_usuario}`);
+            throw new AuthError('Credenciales incorrectas', 401, `Invalid password for user with identifier ${identifier_usuario}`);
         }
         logger.info(`User ${identifier_usuario} logged in successfully.`);
         return {

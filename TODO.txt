@@ -1,0 +1,4 @@
+### Implementar pruebas de funcionalidad
+### Redactar pruebas de integracion
+### Asimilar resultados de prueba de rendimiento y hacer pruebas de rendimiento en otros endpoints
+### Realizar pruebas de seguridad

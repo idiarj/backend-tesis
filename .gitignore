@@ -14,3 +14,7 @@
 ### logs
 *-audit.json
 *.log
+
+
+### tests
+/tests

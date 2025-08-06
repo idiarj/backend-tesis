@@ -3,12 +3,13 @@
 import { AuthService } from "../services/authService.js";
 import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "../errors/ValidationError.js";
-import { userSchema } from "../interfaces/user.interface.js";
+import { userSchema, loginCredentialsSchema } from "../interfaces/user.interface.js";
 import { Token } from "../security/token.js";
 import { server_config } from "../configs/config.js";
 import { SessionError } from "../errors/SessionError.js";
 import { InternalError } from "../errors/InternalError.js";
 import { getLogger } from "../utils/logger.js";
+import { validateSchema } from "../utils/validation.js";
 
 const logger = getLogger('AuthController');
 
@@ -17,20 +18,27 @@ export class AuthController {
         try {
             const {nom_usuario, email_usuario, pwd_usuario, tlf_usuario} = req.body;
             logger.info(`Registering user: ${nom_usuario}`);
-            const validation = userSchema.safeParse(req.body);
+            const validation = validateSchema({
+                schema: userSchema,
+                data: req.body
+            })
             if(!validation.success){
-                throw new ValidationError('Error al validar los campos', 400, `Detalle del error`);
+                const firstMessage = validation.error
+                logger.debug(`Validation result: ${JSON.stringify(firstMessage)}`);
+                throw new ValidationError(firstMessage, 400, `Error al validar los campos con Zod: ${firstMessage}`);
             }
 
-            if(!nom_usuario || !email_usuario || !pwd_usuario || !tlf_usuario) {
-                throw new ValidationError('All fields are required');
-            }
+            // if(!nom_usuario || !email_usuario || !pwd_usuario || !tlf_usuario) {
+            //     throw new ValidationError('All fields are required', 50);
+            // }
             const result = await AuthService.registerUser({
                 nom_usuario,
                 email_usuario,
                 pwd_usuario,
                 tlf_usuario
             });
+
+
             res.status(201).json(result);
             return;
         } catch (error) {
@@ -41,18 +49,27 @@ export class AuthController {
 
     static async login(req: Request, res: Response, next: NextFunction) {
         try {
-            let token;
-            console.log("[AuthController] Logging in user...");
-            console.log(req.body);
-            const { identifier_usuario, pwd_usuario } = req.body;
-            if (!identifier_usuario || !pwd_usuario) {
-                throw new ValidationError('Username and password are required', 400);
+            if(req.cookies.access_token){
+                logger.warn('User is already logged in, cannot login again.');
+                throw new SessionError('Ya hay una sesion activa, por favor cierra sesion para iniciar sesion nuevamente.', 401, 'Cannot login while session is active');
             }
+
+            const { identifier_usuario, pwd_usuario } = req.body;
             logger.info(`Logging in user: ${identifier_usuario}`);
+            const validation = validateSchema({
+                schema: loginCredentialsSchema,
+                data: req.body
+            })
+            if(!validation.success){
+                const firstMessage = validation.error
+                logger.debug(`Validation result: ${JSON.stringify(firstMessage)}`);
+                throw new ValidationError(firstMessage, 400, `Error al validar los campos con Zod: ${firstMessage}`);
+            }
+
             const result = await AuthService.loginUser({ identifier_usuario, pwd_usuario });
             if(result.success && result.data && typeof result.data === 'object'){
                 const { pwd_usuario, ...userData } = result.data as { pwd_usuario?: string; [key: string]: any };
-                token = Token.generateToken({payload: userData ?? {}, secret: server_config.ACCESS_TOKEN_SECRET ?? "", options: {expiresIn: '3h'}})
+                const token = Token.generateToken({payload: userData ?? {}, secret: server_config.ACCESS_TOKEN_SECRET ?? "", options: {expiresIn: '3h'}})
                 res.cookie('access_token', token, {maxAge: 60 * 60 * 60 * 3})
             }
             const { data, ...rest } = result
@@ -86,6 +103,11 @@ export class AuthController {
 
     static async verifyEmailForPasswordReset(req: Request, res: Response, next: NextFunction) {
         try {
+            if(req.cookies.access_token){
+                logger.warn('User is already logged in, cannot verify email for password reset.');
+                throw new SessionError('Ya hay una sesion activa, por favor cierra sesion para recuperar tu contrasena.', 401, 'Cannot verify email for password reset while logged in');
+            }
+
             logger.info('Verifying email for password reset...');
             logger.debug(`Request body: ${JSON.stringify(req.body)}`);
             const { email_usuario } = req.body;
@@ -109,6 +131,10 @@ export class AuthController {
 
     static async resetPassword(req: Request, res: Response, next: NextFunction) {
         try {
+            if(req.cookies.access_token){
+                logger.warn('User is already logged in, cannot reset password.');
+                throw new SessionError('Ya hay una sesion activa, por favor cierra sesion para recuperar tu contrasena.', 401, 'Cannot verify email for password reset while logged in');
+            }
             logger.info('Resetting password for user...');
             console.log(req.body);
             const { token, newPassword } = req.body;

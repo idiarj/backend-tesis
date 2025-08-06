@@ -1,5 +1,5 @@
 import { errorMiddleware } from './middlewares/error.middleware.js';
-import { authRouter } from './routes/dispatcher.js';
+import { authRouter, animalRouter } from './routes/dispatcher.js';
 import { server_config } from './configs/config.js';
 import { getLogger } from './utils/logger.js';
 import morgan from 'morgan';
@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/auth', authRouter);
-
+app.use('/animal', animalRouter);
 
 
 
