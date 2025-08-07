@@ -1,15 +1,17 @@
 {
-  "compilerOptions": { // permite importar archivos .ts directamente
-    "module": "NodeNext",
-    "target": "ES2020",
-    "moduleResolution": "NodeNext",
-    "allowJs": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,  // útil para evitar errores entre Windows/Linux
-    "strict": true,                             // opcional pero recomendado para mejor tipado
-    "skipLibCheck": true                        // evita errores en dependencias externas
-  }
+  "compilerOptions": {
+    "module": "NodeNext",                      // ✔ para ESM moderno
+    "target": "ES2020",                        // ✔ permite import.meta, async/await, etc.
+    "moduleResolution": "NodeNext",            // ✔ requerido junto con 'module: NodeNext'
+    "allowJs": true,                           // ✔ permite JS en el proyecto (si tienes .js)
+    "outDir": "./dist",                        // ✔ salida de archivos compilados
+    "rootDir": "./src",                        // ✔ raíz de tus archivos fuente
+    "esModuleInterop": true,                   // ✔ permite usar imports por default con CommonJS
+    "allowSyntheticDefaultImports": true,      // ✔ evita errores de importación
+    "forceConsistentCasingInFileNames": true,  // ✔ evita errores por mayúsculas/minúsculas
+    "strict": true,                            // ✔ recomendado (puedes desactivarlo si te molesta)
+    "skipLibCheck": true                       // ✔ evita errores en los types de node_modules
+  },
+  "include": ["src"],                          // ✔ asegúrate de compilar solo la carpeta src
+  "exclude": ["node_modules", "dist"]          // ✔ excluye compilados y dependencias
 }

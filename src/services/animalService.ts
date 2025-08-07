@@ -2,17 +2,24 @@ import { AnimaModel } from "../models/animalModel.js";
 import { Animal } from "../interfaces/animal.inferface.js";
 import { getLogger } from "../utils/logger.js";
 import { responseSuccess } from "../interfaces/status.interface.js";
+import { ExternalError } from "../errors/ExternalError.js";
+import ImageService from "./imageService.js";
 
 const logger = getLogger('AnS')
 export class AnimalService {
     static async addAnimal(animal: Animal): Promise<responseSuccess> {
         logger.debug(`Starting addition of animal ${animal.nom_animal} procedure.`);
+        const imageServiceResult = await ImageService.uploadImage(animal.ruta_imagen_animal || '');
+        if (!imageServiceResult) {
+            logger.error('Error uploading image to cloudinary');
+            throw new ExternalError('Ocurrio un error al subir la imagen al servicio externo', 502, 'Error al subir la imagen a cloudinary');
+        }
+        animal.ruta_imagen_animal = imageServiceResult.secure_url;
         const data = await AnimaModel.insertAnimal(animal);
-        logger.debug(`Addition of ${animal.nom_animal} done successfully.`)
+        logger.debug(`Animal ${animal.nom_animal} added successfully with id ${data?.id_animal}`);
         return {
             success: true,
-            message: `${animal.nom_animal} anadido correctamente`,
-            data
+            message: `${animal.nom_animal} anadido correctamente`
         }
     }
 
@@ -56,7 +63,6 @@ export class AnimalService {
         return {
             success: true,
             message: `El animal ha sido actualizado correctamente`,
-            data
         }
     }
 

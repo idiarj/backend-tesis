@@ -30,6 +30,11 @@ export const db_config = {
     DB_QUERYS: readJson("../configs/querys.json"),
 }
 
+export const cloudinary_config = {
+    CLOUDINARY_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_KEY: process.env.CLOUDINARY_API_KEY,
+    CLOUDINARY_SECRET: process.env.CLOUDINARY_API_SECRET,
+}
 
 export const mail_config = {
     APPLICATION_PASSWORD_GMAIL: process.env.APPLICATION_PASSWORD_GMAIL || ""

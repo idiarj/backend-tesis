@@ -103,7 +103,7 @@ export class AuthService {
                                 <!-- Header -->
                                 <tr>
                                 <td align="center" style="background-color: #fff9db; padding: 20px;">
-                                    <img src="../assets/photo_2025-08-03_02-15-26.jpg" alt="Logo Gato Feliz" width="80" height="80" style="display:block;" />
+                                    <img src="https://res.cloudinary.com/dqc0yku26/image/upload/v1754523931/logogf2_zv8jnt.png" alt="Logo Gato Feliz" width="80" height="80" style="display:block;" />
                                     <h2 style="margin: 10px 0 0; color: #F37021;">Recuperar tu contraseña</h2>
                                 </td>
                                 </tr>

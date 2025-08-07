@@ -1,3 +1,5 @@
+import zod from 'zod';
+
 export interface Animal {
     ruta_imagen_animal?: string;
     id_animal?: number;
@@ -8,3 +10,51 @@ export interface Animal {
     genero_animal: string;
     peso_animal: number;
 }
+
+export const AnimalSchema = zod.object({
+    ruta_imagen_animal: zod.url().optional(),
+    nom_animal: zod.string().trim().min(1,
+        {error: 'El nombre del animal no puede estar vacio.'
+        }).max(20, {
+            error: (iss)=>{
+                return `El nombre del animal debe tener un maximo de ${iss.maximum} caracteres.
+                `}
+    }),
+    raza_animal: zod.string().trim().min(2, {
+        error: (iss)=>{
+            return `La raza del animal debe tener un minimo de ${iss.minimum} caracteres.`
+        }   
+    }).max(20, {
+        error: (iss)=>{
+            return `La raza del animal debe tener un maximo de ${iss.maximum} caracteres.`
+        }
+    }),
+    especie_animal: zod.string().min(2, {
+        error: (iss)=>{
+            return `La especie del animal debe tener un minimo de ${iss.minimum} caracteres.`
+        }
+    }).max(100, {
+        error: (iss)=>{
+            return `La especie del animal debe tener un maximo de ${iss.maximum} caracteres.`
+        }
+    }),
+    edad_animal: zod.string().min(1, {
+        error: (iss)=>{
+            return `La edad del animal debe tener un minimo de ${iss.minimum} caracteres.`
+        }
+    }).max(10, {
+        error: (iss)=>{
+            return `La edad del animal debe tener un maximo de ${iss.maximum} caracteres.`
+        }
+    }),
+    genero_animal: zod.string().min(1, {
+        error: (iss)=>{
+            return `El genero del animal debe tener un minimo de ${iss.minimum} caracteres.`
+        }
+    }).max(10, {
+        error: (iss)=>{
+            return `El genero del animal debe tener un maximo de ${iss.maximum} caracteres.`
+        }
+    }),
+    peso_animal: zod.number().min(0)
+});
