@@ -9,12 +9,12 @@ const logger = getLogger('AnS')
 export class AnimalService {
     static async addAnimal(animal: Animal): Promise<responseSuccess> {
         logger.debug(`Starting addition of animal ${animal.nom_animal} procedure.`);
-        const imageServiceResult = await ImageService.uploadImage(animal.ruta_imagen_animal || '');
+        const imageServiceResult = await ImageService.uploadImage(animal.ruta_imagen_an || '');
         if (!imageServiceResult) {
             logger.error('Error uploading image to cloudinary');
             throw new ExternalError('Ocurrio un error al subir la imagen al servicio externo', 502, 'Error al subir la imagen a cloudinary');
         }
-        animal.ruta_imagen_animal = imageServiceResult.secure_url;
+        animal.ruta_imagen_an = imageServiceResult.secure_url;
         const data = await AnimaModel.insertAnimal(animal);
         logger.debug(`Animal ${animal.nom_animal} added successfully with id ${data?.id_animal}`);
         return {

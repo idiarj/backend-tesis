@@ -8,5 +8,5 @@ export class DatabaseError extends InternalError {
         super(message, statusCode, info);
         this.name = "DatabaseError";
         this.info = info;
-    }
+  }
 }

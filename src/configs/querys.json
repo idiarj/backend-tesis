@@ -9,7 +9,7 @@
     "insertPasswordRecoveryToken": "INSERT INTO recuperacion_contrasena_token (id_usuario, token_hash, expira_en) VALUES ($1, $2, NOW() + INTERVAL '15 minutes') RETURNING *",
     "updatePasswordRecoveryTokenUsage": "UPDATE recuperacion_contrasena_token SET usado = true WHERE id_token_recup= $1",
     "verifyPasswordRecoveryToken": "SELECT * FROM recuperacion_contrasena_token WHERE usado = false AND expira_en > NOW() AND id_usuario = $1",
-    "insertAnimal": "",
+    "insertAnimal": "INSERT INTO animal (nom_animal, especie_animal, raza_animal, edad_animal, genero_animal, peso_animal, ruta_imagen_an) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
     "getAllAnimals": "",
     "getAnimalById": "",
     "getAnimalsByUserId": "SELECT * FROM animal WHERE id_usuario = $1",

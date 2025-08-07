@@ -1,7 +1,7 @@
 import zod from 'zod';
 
 export interface Animal {
-    ruta_imagen_animal?: string;
+    ruta_imagen_an?: string;
     id_animal?: number;
     nom_animal: string;
     raza_animal: string;
@@ -12,7 +12,7 @@ export interface Animal {
 }
 
 export const AnimalSchema = zod.object({
-    ruta_imagen_animal: zod.url().optional(),
+    ruta_imagen_an: zod.url().optional(),
     nom_animal: zod.string().trim().min(1,
         {error: 'El nombre del animal no puede estar vacio.'
         }).max(20, {
@@ -56,5 +56,7 @@ export const AnimalSchema = zod.object({
             return `El genero del animal debe tener un maximo de ${iss.maximum} caracteres.`
         }
     }),
-    peso_animal: zod.number().min(0)
+    peso_animal: zod.number({
+        error: 'El peso del animal debe ser un numero.'
+    }).min(0)
 });
