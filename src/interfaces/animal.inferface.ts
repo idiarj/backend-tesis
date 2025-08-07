@@ -4,7 +4,6 @@ export interface Animal {
     ruta_imagen_an?: string;
     id_animal?: number;
     nom_animal: string;
-    raza_animal: string;
     especie_animal: string;
     edad_animal: string;
     genero_animal: string;
@@ -19,15 +18,6 @@ export const AnimalSchema = zod.object({
             error: (iss)=>{
                 return `El nombre del animal debe tener un maximo de ${iss.maximum} caracteres.
                 `}
-    }),
-    raza_animal: zod.string().trim().min(2, {
-        error: (iss)=>{
-            return `La raza del animal debe tener un minimo de ${iss.minimum} caracteres.`
-        }   
-    }).max(20, {
-        error: (iss)=>{
-            return `La raza del animal debe tener un maximo de ${iss.maximum} caracteres.`
-        }
     }),
     especie_animal: zod.string().min(2, {
         error: (iss)=>{

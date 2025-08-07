@@ -14,14 +14,13 @@ export class AnimaModel{
             const {
                 ruta_imagen_an,
                 nom_animal, 
-                raza_animal, 
                 especie_animal, 
                 edad_animal, 
                 genero_animal, 
                 peso_animal 
                 } = animal
             const key = 'insertAnimal';
-            const params: any[] = [nom_animal, especie_animal, raza_animal, edad_animal, genero_animal, peso_animal, ruta_imagen_an];
+            const params: any[] = [nom_animal, especie_animal, edad_animal, genero_animal, peso_animal, ruta_imagen_an];
             const result = await db.executeQuery<Animal>({
                 queryKey: key,
                 params
@@ -49,7 +48,7 @@ export class AnimaModel{
             const result = await db.executeQuery<Animal>({queryKey: key, params: []})
             if(!result.rows || result.rows.length === 0){
                 logger.info('No animals found')
-                return null
+                throw new DatabaseError('No animals found', 404, 'No animals found in the database');
             }
             logger.info(`Retrieved ${result.rows.length} animals`)
             return result.rows;
@@ -110,12 +109,11 @@ export class AnimaModel{
     static async updateAnimal(animal: Animal): Promise<Animal | null>{
         try {
             logger.info(`Starting update of animal with ID ${animal.id_animal}...`)
-            const {ruta_imagen_an, nom_animal, raza_animal, especie_animal, edad_animal, genero_animal, peso_animal} = animal;
+            const {ruta_imagen_an, nom_animal, especie_animal, edad_animal, genero_animal, peso_animal} = animal;
             const key = 'updateAnimal';
             const params = [
                 ruta_imagen_an, 
                 nom_animal, 
-                raza_animal, 
                 especie_animal, 
                 edad_animal, 
                 genero_animal, 

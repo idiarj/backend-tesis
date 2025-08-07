@@ -3,6 +3,7 @@ import { Animal } from "../interfaces/animal.inferface.js";
 import { getLogger } from "../utils/logger.js";
 import { responseSuccess } from "../interfaces/status.interface.js";
 import { ExternalError } from "../errors/ExternalError.js";
+import fs from 'fs';
 import ImageService from "./imageService.js";
 
 const logger = getLogger('AnS')
@@ -14,19 +15,26 @@ export class AnimalService {
             logger.error('Error uploading image to cloudinary');
             throw new ExternalError('Ocurrio un error al subir la imagen al servicio externo', 502, 'Error al subir la imagen a cloudinary');
         }
+        if (animal.ruta_imagen_an) {
+            fs.unlink(animal.ruta_imagen_an, (err) => {
+                if (err) logger.error(`Error deleting temp image: ${err.message}`);
+                else logger.info(`Temp image deleted: ${animal.ruta_imagen_an}`);
+        });
+    }
         animal.ruta_imagen_an = imageServiceResult.secure_url;
         const data = await AnimaModel.insertAnimal(animal);
         logger.debug(`Animal ${animal.nom_animal} added successfully with id ${data?.id_animal}`);
         return {
             success: true,
-            message: `${animal.nom_animal} anadido correctamente`
+            message: `${animal.nom_animal} anadido correctamente`,
+            data
         }
     }
 
     static async getAllAnimals(): Promise<responseSuccess>{
         logger.debug('Starting to get all animals');
         const data = await AnimaModel.getAllAnimals();
-        logger.debug(`Retrieval of all animals done succesfully`)
+        logger.debug(`Retrieval of all animals done succesfully, ${JSON.stringify(data)}`);
         return {
             success: true,
             message: 'Los animales han sido obtenidos correctamente',

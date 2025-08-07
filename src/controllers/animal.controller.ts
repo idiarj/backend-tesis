@@ -40,9 +40,12 @@ export class AnimalController {
         }
     }
 
-    static AllAnimalsGET(req: Request, res: Response, next: NextFunction) {
+    static async AllAnimalsGET(req: Request, res: Response, next: NextFunction) {
         try {
-            
+            logger.info('AllAnimalsGET called');
+            const response = await AnimalService.getAllAnimals();
+            logger.debug(`Response from AnimalService.getAllAnimals: ${JSON.stringify(response)}`);
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }
