@@ -3,7 +3,7 @@
     "validateUser": "SELECT nom_usuario FROM usuario WHERE LOWER(nom_usuario) = LOWER($1)",
     "validateEmail": "SELECT id_usuario, email_usuario FROM usuario WHERE LOWER(email_usuario) = LOWER($1)",
     "validatePhoneNumber": "SELECT tlf_usuario FROM usuario WHERE tlf_usuario = $1",
-    "checkUserCredentials": "SELECT id_usuario, nom_usuario, email_usuario, pwd_usuario FROM usuario WHERE LOWER(nom_usuario) = LOWER($1) OR LOWER(email_usuario) = LOWER($1)",
+    "checkUserCredentials": "SELECT id_usuario, nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil FROM usuario WHERE LOWER(nom_usuario) = LOWER($1) OR LOWER(email_usuario) = LOWER($1)",
     "getUserById": "SELECT * FROM usuario WHERE id_usuario = $1",
     "updatePassword": "UPDATE usuario SET pwd_usuario = $1 WHERE email_usuario = $2 RETURNING id_usuario",
     "insertPasswordRecoveryToken": "INSERT INTO recuperacion_contrasena_token (id_usuario, token_hash, expira_en) VALUES ($1, $2, NOW() + INTERVAL '15 minutes') RETURNING *",

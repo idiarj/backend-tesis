@@ -1,5 +1,3 @@
-
-
 import { AuthService } from "../services/authService.js";
 import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "../errors/ValidationError.js";
@@ -46,7 +44,6 @@ export class AuthController {
         }
     }
 
-
     static async login(req: Request, res: Response, next: NextFunction) {
         try {
             if(req.cookies.access_token){
@@ -67,14 +64,16 @@ export class AuthController {
             }
 
             const result = await AuthService.loginUser({ identifier_usuario, pwd_usuario });
+            let userData;
             if(result.success && result.data && typeof result.data === 'object'){
-                const { pwd_usuario, ...userData } = result.data as { pwd_usuario?: string; [key: string]: any };
+                const { pwd_usuario, ...restData } = result.data as { pwd_usuario?: string; [key: string]: any };
+                userData = restData;
                 const token = Token.generateToken({payload: userData ?? {}, secret: server_config.ACCESS_TOKEN_SECRET ?? "", options: {expiresIn: '3h'}})
                 res.cookie('access_token', token, {maxAge: 60 * 60 * 60 * 3})
             }
-            const { data, ...rest } = result
+            logger.debug(`Login result: ${JSON.stringify(userData)}`);
             logger.info(`Login successful for user: ${identifier_usuario}`);
-            res.status(200).json(rest);
+            res.status(200).json({ success: result.success, message: result.message, data: userData });
             return;
         } catch (error) {
             //console.error("[AuthController] Error during login:", error);
@@ -150,6 +149,31 @@ export class AuthController {
             }
             const result = await AuthService.resetPassword({ email_usuario: decoded.email_usuario, token, newPassword });
             res.status(200).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async getCurrentUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            logger.info('Retrieving current user...');
+            const { access_token } = req.cookies;
+            logger.debug(`Access token received: ${access_token}`);
+            if (access_token === undefined) {
+                logger.debug('No access token found in cookies');
+                throw new SessionError('No hay una sesion activa', 401, 'No access token found in cookies');
+            }
+            const secret = server_config.ACCESS_TOKEN_SECRET;
+            if (!secret) {
+                throw new InternalError('Internal server error, please try again later.', 500, 'JWT secret for access token is not defined.');
+            }
+            const decoded = Token.verifyToken({ token: access_token, secret });
+            const {exp, iat, ...data} = decoded
+            res.status(200).json({
+                success: true,
+                message: 'Current user retrieved successfully',
+                data
+            });
         } catch (error) {
             next(error);
         }
