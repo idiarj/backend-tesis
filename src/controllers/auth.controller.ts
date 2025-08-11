@@ -69,7 +69,11 @@ export class AuthController {
                 const { pwd_usuario, ...restData } = result.data as { pwd_usuario?: string; [key: string]: any };
                 userData = restData;
                 const token = Token.generateToken({payload: userData ?? {}, secret: server_config.ACCESS_TOKEN_SECRET ?? "", options: {expiresIn: '3h'}})
-                res.cookie('access_token', token, {maxAge: 60 * 60 * 60 * 3})
+                res.cookie('access_token', token, {
+                    maxAge: 60 * 60 * 60 * 3, 
+                    sameSite: server_config.NODE_ENV === 'production' ? 'none' : 'lax',
+                    secure: server_config.NODE_ENV === 'production',
+                })
             }
             logger.debug(`Login result: ${JSON.stringify(userData)}`);
             logger.info(`Login successful for user: ${identifier_usuario}`);
