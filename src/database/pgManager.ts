@@ -27,7 +27,7 @@ export class pgManager {
         }
     }
 
-    async executeRawQuery(query: string, params: any[] = [], client?: PoolClient): Promise<QueryResult> {
+    async executeRawQuery({query, params = [], client}: {query: string, params?: any[], client?: PoolClient}): Promise<QueryResult> {
         if (!client) {
             client = await this.getConnection();
         }

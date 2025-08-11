@@ -34,7 +34,8 @@ const buildFormat = (labelValue: string, useColor: boolean) =>
     align(),
     ...(useColor ? [colorize()] : []),
     printf(({ timestamp, level, message, label }) => {
-      const paddedLabel = (label as string).padEnd(15);
+      const labelStr = typeof label === 'string' ? label : '';
+      const paddedLabel = labelStr.padEnd(labelStr.length);
       const paddedLevel = level.padEnd(7);
       return `[${timestamp}] [${paddedLabel}] ${paddedLevel}: ${message}`;
     })

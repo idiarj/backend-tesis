@@ -4,6 +4,7 @@ import { AnimalSchema } from "../interfaces/animal.inferface.js";
 import { ValidationError } from "../errors/ValidationError.js";
 import { validateSchema } from "../utils/validation.js";
 import { getLogger } from '../utils/logger.js';
+import { InternalError } from "../errors/InternalError.js";
 
 
 const logger = getLogger('AnimalController');
@@ -53,7 +54,9 @@ export class AnimalController {
 
     static async AnimalDetailGET(req: Request, res: Response, next: NextFunction) {
         try {
-            
+            const {id_animal} = req.params;
+            const response = await AnimalService.getAnimal({id_animal: Number(id_animal)});
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }
@@ -78,7 +81,16 @@ export class AnimalController {
 
     static async AnimalDELETE(req: Request, res: Response, next: NextFunction) {
         try {
+            logger.info(`AnimalDELETE called`);
 
+            const { id_animal } = req.params;
+            logger.debug(`Request params: ${JSON.stringify(req.params)}`);
+            if(!id_animal){
+                throw new InternalError('Internal server, error please try again later', 500, 'No se proporcionó un ID de animal');
+            }
+            const response = await AnimalService.deleteAnimal({ id_animal: Number(id_animal) });
+            logger.debug(`Response from AnimalService.deleteAnimal: ${response.success}`);
+            res.status(200).json(response);
         } catch (error) {
             next(error);
         }

@@ -12,7 +12,6 @@ export class AnimaModel{
         try {
             logger.info('Starting animal insertion procedure...')
             const {
-                ruta_imagen_an,
                 nom_animal, 
                 especie_animal, 
                 edad_animal, 
@@ -20,7 +19,7 @@ export class AnimaModel{
                 peso_animal 
                 } = animal
             const key = 'insertAnimal';
-            const params: any[] = [nom_animal, especie_animal, edad_animal, genero_animal, peso_animal, ruta_imagen_an];
+            const params: any[] = [nom_animal, especie_animal, edad_animal, genero_animal, peso_animal];
             const result = await db.executeQuery<Animal>({
                 queryKey: key,
                 params
@@ -38,6 +37,26 @@ export class AnimaModel{
                 throw new DatabaseError('Internal server error', 500, error.message || 'Unknown error')
             }
             return null
+        }
+    }
+
+    static async updateAnimalPhoto({photoURL, catId}: {photoURL: string, catId: number}): Promise<boolean>{
+        try {
+            const result = await db.executeRawQuery({
+                query: 'UPDATE animal SET ruta_imagen_an = $1 WHERE id_animal = $2',
+                params: [photoURL, catId]
+            })
+            if(result.rowCount === 0){
+                throw new DatabaseError('No se pudo actualizar la foto del animal', 500, `No se encontro el animal con id ${catId}`);
+            }
+            return true
+        } catch (error) {
+            if(error instanceof DatabaseError){
+                throw error
+            }else if(error instanceof Error){
+                throw new DatabaseError('Internal server error', 500, error.message || 'Unknown error')
+            }
+            return false
         }
     }
 
