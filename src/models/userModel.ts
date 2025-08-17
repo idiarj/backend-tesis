@@ -243,17 +243,22 @@ export class UserModel {
     }
 
     static async insertPasswordRecoveryToken({id_usuario, password_recovery_token}: { id_usuario: number | undefined, password_recovery_token: string }): Promise<void> {
+        const client = await db.beginTransaction();
         try {
             logger.debug(`Inserting password recovery token for user ID: ${id_usuario}`);
+            await db.executeRawQuery({ query: `DELETE FROM recuperacion_contrasena_token WHERE id_usuario = $1`, params: [id_usuario], client });
+
             const key = "insertPasswordRecoveryToken";
             logger.debug(`Token that is going to be inserted in the DB: ${password_recovery_token}`);
             const params = [id_usuario, password_recovery_token];
-            const result = await db.executeQuery({ queryKey: key, params });
+            const result = await db.executeQuery({ queryKey: key, params, client });
             if (result.rowCount === 0) {
                 throw new DatabaseError("Internal Server Error: Password recovery token insertion failed", 500, "No rows affected during token insertion");
             }
+            await db.commitTransaction(client);
             logger.debug(`Password recovery token inserted successfully for user ID: ${id_usuario}`);
         } catch (error) {
+            await db.rollbackTransaction(client);
             //console.error("[UserModel] Error inserting password recovery token:", error);
             if (error instanceof BaseError) {
                 throw error;
