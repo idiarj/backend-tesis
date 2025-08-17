@@ -6,6 +6,7 @@ import { Token } from "../security/token.js";
 import { server_config } from "../configs/config.js";
 import { SessionError } from "../errors/SessionError.js";
 import { InternalError } from "../errors/InternalError.js";
+import { ForbiddenError } from "../errors/ForbiddenError.js";
 import { getLogger } from "../utils/logger.js";
 import { validateSchema } from "../utils/validation.js";
 
@@ -141,6 +142,9 @@ export class AuthController {
             logger.info('Resetting password for user...');
             console.log(req.body);
             const { token, newPassword } = req.body;
+            if (!token) {
+                throw new ForbiddenError('No estas autorizado para realizar esta accion.', 403, 'Token and new password are required');
+            }
             const secret = server_config.RECOVER_PASSWORD_TOKEN_SECRET
             if(!secret){
                 throw new InternalError('Internal server error, please try again later.', 500, 'JWT secret for password recovery token is not defined.');

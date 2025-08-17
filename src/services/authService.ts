@@ -55,7 +55,7 @@ export class AuthService {
         logger.info(`Starting login process for user: ${identifier_usuario}`);
         const credentials = await UserModel.checkCredentials({ identifier_usuario, pwd_usuario });
         if (!credentials) {
-            throw new AuthError('Credenciales incorrectas', 401, `User with identifier ${identifier_usuario} not found.`);
+            throw new AuthError(`Credenciales incorrectas.`, 401, `User with identifier ${identifier_usuario} not found.`);
         }
         const validPwd = await HashManager.verifyData({
             hashedData: credentials.pwd_usuario,
@@ -76,7 +76,7 @@ export class AuthService {
         logger.info(`Verifying email for password reset: ${email}`);
         const user = await UserModel.validateEmail({ email });
         if (!user) {
-            throw new ValidationError('Email not registered', 404);
+            throw new ValidationError('El correo ingresado no esta registrado.', 404);
         }
 
         const hashedToken = await HashManager.hashData({data: password_recovery_token});

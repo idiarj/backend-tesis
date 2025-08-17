@@ -215,7 +215,7 @@ export class UserModel {
         const client = await db.beginTransaction();
         try {
             logger.debug(`Verifying password recovery for email: ${email_usuario}`);
-            const resultRawQuery = await db.executeRawQuery(`SELECT id_usuario FROM usuario WHERE email_usuario = $1`, [email_usuario], client);
+            const resultRawQuery = await db.executeRawQuery({ query: `SELECT id_usuario FROM usuario WHERE email_usuario = $1`, params: [email_usuario], client });
             if (resultRawQuery.rows.length === 0) {
                 logger.debug(`No user found with the provided email: ${email_usuario}`);
                 return null; // No user found with the provided email

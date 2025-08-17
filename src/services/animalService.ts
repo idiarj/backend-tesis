@@ -58,10 +58,12 @@ export class AnimalService {
         }
     }
 
-    static async getAllAnimals(): Promise<responseSuccess>{
+    static async getAllAnimals({adoptable}: {adoptable: boolean}): Promise<responseSuccess>{
         logger.debug('Starting to get all animals');
-        const data = await AnimaModel.getAllAnimals();
-        logger.debug(`Retrieval of all animals done succesfully, ${JSON.stringify(data)}`);
+        const data = await AnimaModel.getAllAnimals({
+            adoptable
+        });
+        logger.debug(`Retrieval of all animals done succesfully`);
         return {
             success: true,
             message: 'Los animales han sido obtenidos correctamente',
@@ -115,6 +117,4 @@ export class AnimalService {
             message: `El animal ha sido eliminado correctamente`,
         }
     }
-
-
 }

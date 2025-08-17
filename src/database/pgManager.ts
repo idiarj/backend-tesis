@@ -23,7 +23,7 @@ export class pgManager {
         try {
             return await this.pool.connect();
         } catch (error) {
-            throw new ConnectionError(`Internal server error`, 500, `Failed to get database connection: ${String(error )}`);
+            throw new ConnectionError(`Error interno en el servidor, por favor intentalo de nuevo mas tarde.`, 500, `Failed to get database connection: ${String(error )}`);
         }
     }
 
@@ -35,7 +35,7 @@ export class pgManager {
         try {
             return await client.query(query, params);
         } catch (error) {
-            throw new DatabaseError(`Internal server error`, 500, `Failed to execute query: ${query}, ${String(error)}`);
+            throw new DatabaseError(`Error interno en el servidor, por favor intentalo de nuevo mas tarde.`, 500, `Failed to execute query: ${query}, ${String(error)}`);
         } finally {
             if (shouldRealease) {
                 await this.releaseConnection(client);
@@ -46,7 +46,7 @@ export class pgManager {
     async executeQuery<T extends QueryResultRow = any>({queryKey = '', params = [], client}: {queryKey: string, params: any[], client?: PoolClient}): Promise<QueryResult<T>> {
         const query = this.querys[queryKey];
         if (!query) {
-            throw new DatabaseError('Internal server error, please try again later', 500, `Query for key ${query} not found.`);
+            throw new DatabaseError('Error interno en el servidor, por favor intentalo de nuevo mas tarde., please try again later', 500, `Query for key ${query} not found.`);
         }
     
         const shouldRelease = !client;
@@ -61,7 +61,7 @@ export class pgManager {
             logger.info(`Query executed successfully: ${queryKey}`);
             return result; // Only the rows are returned
         } catch (error) {
-            throw new DatabaseError('Internal server error', 500, `Execution for query ${queryKey} failed: ${String(error)}`);
+            throw new DatabaseError('Error interno en el servidor, por favor intentalo de nuevo mas tarde.', 500, `Execution for query ${queryKey} failed: ${String(error)}`);
         } finally {
             if (shouldRelease && client) {
                 await this.releaseConnection(client); 
@@ -73,7 +73,7 @@ export class pgManager {
         try {
             await this.pool.end();
         } catch (error) {
-            throw new DatabaseError('Internal server error', 500, `Failed to close database pool: ${error}`);
+            throw new DatabaseError('Error interno en el servidor, por favor intentalo de nuevo mas tarde.', 500, `Failed to close database pool: ${error}`);
         }
     }
 
@@ -81,7 +81,7 @@ export class pgManager {
         try {
             client.release();
         } catch (error) {
-            throw new DatabaseError(`Internal server error`, 500, `Failed to release database connection: ${String(error)}`);
+            throw new DatabaseError(`Error interno en el servidor, por favor intentalo de nuevo mas tarde.`, 500, `Failed to release database connection: ${String(error)}`);
         }
     }
     async beginTransaction(): Promise<PoolClient> {
@@ -91,7 +91,7 @@ export class pgManager {
             return client;
         } catch (error) {
             client.release();
-            throw new DatabaseError(`Internal server error`, 500, `Failed to begin transaction: ${String(error)}`);
+            throw new DatabaseError(`Error interno en el servidor, por favor intentalo de nuevo mas tarde.`, 500, `Failed to begin transaction: ${String(error)}`);
         }
     }
 
@@ -99,7 +99,7 @@ export class pgManager {
         try {
             await client.query('COMMIT');
         } catch (error) {
-            throw new DatabaseError(`Internal server error`, 500, `Failed to commit transaction: ${String(error)}`);
+            throw new DatabaseError(`Error interno en el servidor, por favor intentalo de nuevo mas tarde.`, 500, `Failed to commit transaction: ${String(error)}`);
         } finally {
             client.release();
         }
@@ -109,7 +109,7 @@ export class pgManager {
         try {
             await client.query('ROLLBACK');
         } catch (error) {
-            throw new DatabaseError(`Internal server error`, 500, `Failed to rollback transaction: ${String(error)}`);
+            throw new DatabaseError(`Error interno en el servidor, por favor intentalo de nuevo mas tarde.`, 500, `Failed to rollback transaction: ${String(error)}`);
         } finally {
             client.release();
         }

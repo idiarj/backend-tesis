@@ -31,6 +31,11 @@ export const userSchema = z.object({
     }).nonempty({
         message: "El nombre de usuario es obligatorio."
     }),
+    email_usuario: z.email({
+        error: 'El campo email debe ser un email valido.'
+    }).trim().nonempty({
+        error: "El email es obligatorio."
+    }),
     pwd_usuario: z.string({
         error: 'La contrasena debe contener solo texto.'
     }).trim().min(5, {
@@ -43,11 +48,6 @@ export const userSchema = z.object({
         }
     }).nonempty({
         message: "La contrasena es obligatoria."
-    }),
-    email_usuario: z.email({
-        error: 'El campo email debe ser un email valido.'
-    }).trim().nonempty({
-        message: "El email es obligatorio."
     }),
     tlf_usuario: z.string({
         error: 'El numero telefonico debe contener solo texto.'

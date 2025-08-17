@@ -60,11 +60,11 @@ export class AnimaModel{
         }
     }
 
-    static async getAllAnimals(): Promise<Animal[] | null>{
+    static async getAllAnimals({adoptable}: {adoptable: boolean}): Promise<Animal[] | null>{
         try {
             logger.info('Starting retrieval of all animals...')
             const key = 'getAllAnimals';
-            const result = await db.executeQuery<Animal>({queryKey: key, params: []})
+            const result = await db.executeQuery<Animal>({queryKey: key, params: [adoptable]})
             if(!result.rows || result.rows.length === 0){
                 logger.info('No animals found')
                 throw new DatabaseError('No animals found', 404, 'No animals found in the database');

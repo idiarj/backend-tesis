@@ -32,21 +32,64 @@
 // test();
 
 
-import { db } from "./instances/db.js";
+import { AnimalService } from "./services/animalService.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// AnimalService.addAnimal({})
 
 
-const test = async () => {
+// const insertHospitalizedAnimals = async (animals) => {
+//     try {
+//         for (const animal of animals) {
+//             await AnimalService.addAnimal(animal);
+//         }
+//     } catch (error) {
+//         console.error('Error inserting hospitalized animals:', error);
+//     }
+// };
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const imagesDir = path.resolve(__dirname, './cats'); // Change to your images folder
+
+// Read all files in the directory and filter for images
+const getAllImages = (dir: string) => {
+    const files = fs.readdirSync(dir);
+    // Filter for common image extensions
+    return files.filter(file =>
+        /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)
+    ).map(file => path.join(dir, file));
+};
+
+const imagePaths = getAllImages(imagesDir);
+
+ const insertAllAnimalsTest = async () => {
     try {
-        const result = await db.executeRawQuery(`SELECT id_usuario, nom_usuario, u.id_perfil, des_perfil, op.id_opcion, des_opcion FROM usuario u
-        INNER JOIN perfil per ON u.id_perfil = per.id_perfil
-        INNER JOIN perfil_opcion perop ON per.id_perfil = perop.id_perfil
-        INNER JOIN opcion op ON  perop.id_opcion = op.id_opcion WHERE id_usuario = $1`, [16])
-        console.log(result.rows);
-        return result.rows;
+        for (let index = 0; index < imagePaths.length; index++) {
+            const imagePath = imagePaths[index];
+            const animal = {
+                ruta_imagen_an: imagePath,
+                nom_animal: `Hospitalizado ${index + 1}`,
+                especie_animal: 'Gato',
+                edad_animal: '8 meses',
+                genero_animal: 'Hembra',
+                peso_animal: 3
+            };
+            console.log('Inserting animal:', JSON.stringify(animal, null, 2));
+            await AnimalService.addAnimal(animal);
+            if ((index + 1) % 10 === 0) {
+                await new Promise(resolve => setTimeout(resolve, 3000)); // 3s delay cada 10 inserciones
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 500)); // 0.5s delay
+            }
+        }
     } catch (error) {
-        console.error('Error during database operations:', error);
+        console.error('Error inserting all animals:', error);
     }
-}
+ }
 
+ insertAllAnimalsTest();
 
-test();
+//console.log(imagePaths);
