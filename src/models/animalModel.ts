@@ -61,17 +61,38 @@ export class AnimaModel{
         }
     }
 
-    static async getAllAnimals({adoptable}: {adoptable: boolean}): Promise<Animal[] | null>{
+    static async getAnimals(): Promise<Animal[] | null>{
         try {
             logger.info('Starting retrieval of all animals...')
-            const key = 'getAllAnimals';
-            const result = await db.executeQuery<Animal>({queryKey: key, params: [adoptable]})
+            const key = 'getAnimals';
+            const result = await db.executeQuery<Animal>({queryKey: key, params: []})
             if(!result.rows || result.rows.length === 0){
                 logger.info('No animals found')
                 throw new DatabaseError('No animals found', 404, 'No animals found in the database');
             }
             logger.info(`Retrieved ${result.rows.length} animals`)
             return result.rows;
+        } catch (error) {
+            if(error instanceof DatabaseError){
+                throw error
+            }else if(error instanceof Error){
+                throw new DatabaseError('Internal server error', 500, error.message || 'Unknown error')
+            }
+            return null
+        }
+    }
+
+    static async getAdoptableAnimals(): Promise<Animal[] | null>{
+        try {
+            logger.info('Starting retrieval of adoptable animals...')
+            const key = 'getAdoptableAnimals';
+            const result = await db.executeQuery<Animal>({queryKey: key, params: [true]})
+            if(!result.rows || result.rows.length === 0){
+                logger.info('No adoptable animals found')
+                return null
+            }
+            logger.info(`Retrieved ${result.rows.length} adoptable animals`)
+            return result.rows
         } catch (error) {
             if(error instanceof DatabaseError){
                 throw error

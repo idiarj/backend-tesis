@@ -24,6 +24,10 @@ export class RequestController{
     static async createRequest(req: Request, res: Response, next: NextFunction){
         try {
             logger.info('createRequest called');
+            logger.debug(`Request body: ${JSON.stringify(req.body)}`);
+            logger.debug(`Request query: ${JSON.stringify(req.query)}`);
+            logger.debug(`Request cookies: ${JSON.stringify(req.cookies)}`);
+            //logger.debug(`Request: ${JSON.stringify(req)}`);
             const { id_animal } = req.body;
             const { type } = req.query;
             const { access_token } = req.cookies;

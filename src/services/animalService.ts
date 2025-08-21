@@ -58,11 +58,14 @@ export class AnimalService {
         }
     }
 
-    static async getAllAnimals({adoptable}: {adoptable: boolean}): Promise<responseSuccess>{
+    static async getAnimals({adoptable}: {adoptable: boolean}): Promise<responseSuccess>{
         logger.debug('Starting to get all animals');
-        const data = await AnimaModel.getAllAnimals({
-            adoptable
-        });
+        let data: Animal[] | null;
+        if(adoptable){
+            data = await AnimaModel.getAdoptableAnimals();
+        } else {
+            data = await AnimaModel.getAnimals();
+        }
         logger.debug(`Retrieval of all animals done succesfully`);
         return {
             success: true,

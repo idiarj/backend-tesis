@@ -22,7 +22,7 @@
 
 // async function test() {
 //     try {
-//         const response = await AnimalService.getAllAnimals();
+//         const response = await AnimalService.getAnimals();
 //         console.log('Response:', response);
 //     } catch (error) {
 //         console.error('Error during animal operations:', error);

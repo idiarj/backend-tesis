@@ -47,10 +47,10 @@ export class AnimalController {
             logger.debug(`Request query: ${JSON.stringify(req.query)}`);
             const booleanAdopt = adoptable === 'true';
             logger.info('AllAnimalsGET called');
-            const response = await AnimalService.getAllAnimals({
+            const response = await AnimalService.getAnimals({
                 adoptable: booleanAdopt
             });
-            //logger.debug(`Response from AnimalService.getAllAnimals: ${JSON.stringify(response)}`);
+            //logger.debug(`Response from AnimalService.getAnimals: ${JSON.stringify(response)}`);
             res.status(200).json(response);
         } catch (error) {
             next(error);
