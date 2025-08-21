@@ -1,13 +1,14 @@
 
 import { db } from "../instances/db.js";
 import { getLogger } from "../utils/logger.js";
-import { Animal } from "../interfaces/animal.inferface.js";
+import { Animal, AnimalRequest } from "../interfaces/animal.inferface.js";
 import { DatabaseError } from "../errors/DatabaseError.js";
 
 const logger = getLogger("ANI");
 
 
 export class AnimaModel{
+
     static async insertAnimal(animal: Animal): Promise<Animal | null>{
         try {
             logger.info('Starting animal insertion procedure...')
@@ -176,4 +177,6 @@ export class AnimaModel{
             return false;
         }
     }
+
+    
 }

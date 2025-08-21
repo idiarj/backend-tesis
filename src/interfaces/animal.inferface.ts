@@ -10,10 +10,20 @@ export interface Animal {
     peso_animal: number;
 }
 
+export interface AnimalRequest {
+    id_acogida?: number;
+    id_usuario: number;
+    id_animal: number;
+    id_tipo_acogida: number;
+    id_acogida_est: number;
+    fecha_acogida?: Date;
+}
+
 export const AnimalSchema = zod.object({
     ruta_imagen_an: zod.url().optional(),
     nom_animal: zod.string().trim().min(1,
-        {error: 'El nombre del animal no puede estar vacio.'
+        {
+            error: 'El nombre del animal no puede estar vacio.'
         }).max(20, {
             error: (iss)=>{
                 return `El nombre del animal debe tener un maximo de ${iss.maximum} caracteres.

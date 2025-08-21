@@ -4,10 +4,9 @@ import { responseSuccess } from "../interfaces/status.interface.js";
 import { ValidationError } from "../errors/ValidationError.js";
 import { HashManager } from "../security/HashManager.js";
 import { mail } from "../instances/mail.js";
-import { getMailTemplate } from "../utils/getMailTemplate.js";
+import { getPwdRecoverEmailTemp } from "../utils/getMailTemplate.js";
 import { getLogger } from "../utils/logger.js";
 import { AuthError } from "../errors/AuthError.js";
-import { token } from "morgan";
 
 const logger = getLogger('AuthService')
 
@@ -89,7 +88,7 @@ export class AuthService {
         await mail.sendTemplate({
             from: `idiar16@gmail.com`,
             subject: 'Password Recovery',
-            html: getMailTemplate({
+            html: getPwdRecoverEmailTemp({
                 frontURL: `http://localhost:5173`,
                 token: password_recovery_token
             }),
