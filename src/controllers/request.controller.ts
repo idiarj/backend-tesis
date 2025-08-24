@@ -21,6 +21,16 @@ export class RequestController{
         }
     }
 
+    static async getPendingRequests(req: Request, res: Response, next: NextFunction): Promise<responseSuccess | any>{
+        try {
+            logger.info('getPendingRequests called');
+            const result = await RequestService.getPendingRequests();
+            res.status(200).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     static async createRequest(req: Request, res: Response, next: NextFunction){
         try {
             logger.info('createRequest called');

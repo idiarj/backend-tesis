@@ -28,6 +28,7 @@ export class RequestModel{
         }
     }
 
+    
     static async acceptAnimalRequest({id_acogida}: {id_acogida: number}): Promise<AnimalRequest | null>{
         try {
             const result = await db.executeQuery<AnimalRequest>({
@@ -80,6 +81,30 @@ export class RequestModel{
                 return [];
             }
             logger.info(`Retrieved ${result.rows.length} animal requests successfully`);
+            return result.rows;
+        } catch (error) {
+            if (error instanceof DatabaseError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw new DatabaseError('Internal server error', 500, error.message || 'Unknown error');
+            }
+            return [];
+        }
+    }
+    
+    static async getPendingRequest(): Promise<AnimalRequest[]> {
+        try {
+
+            const queryKey = 'get_pending_request';
+
+            const result = await db.executeQuery<AnimalRequest>({
+                queryKey,
+                params: []
+            });
+            if (!result.rows || result.rows.length === 0) {
+                return [];
+            }
+            logger.info(`Retrieved ${result.rows.length} pending animal requests successfully`);
             return result.rows;
         } catch (error) {
             if (error instanceof DatabaseError) {

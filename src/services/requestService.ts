@@ -16,6 +16,17 @@ export class RequestService{
         };
     }
 
+    static async getPendingRequests(){
+        logger.info("Starting to fetch pending requests...");
+        const requests = await RequestModel.getPendingRequest();
+        logger.info("Pending requests fetched successfully.");
+        return {
+            success: true,
+            message: "Pending requests fetched successfully.",
+            data: requests
+        };
+    }
+
     static async createRequest({id_usuario, id_animal, tipo_acogida}: {id_usuario: number, id_animal: number, tipo_acogida: string}) {
         let id_tipo_acogida = tipo_acogida === "adopt" ? 2 : 1;
         logger.info("Starting request creation...");
