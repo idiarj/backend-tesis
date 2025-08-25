@@ -7,6 +7,8 @@ import { mail } from "../instances/mail.js";
 import { getPwdRecoverEmailTemp } from "../utils/getMailTemplate.js";
 import { getLogger } from "../utils/logger.js";
 import { AuthError } from "../errors/AuthError.js";
+import { server_config } from "../configs/config.js";
+
 
 const logger = getLogger('AuthService')
 
@@ -89,7 +91,7 @@ export class AuthService {
             from: `idiar16@gmail.com`,
             subject: 'Password Recovery',
             html: getPwdRecoverEmailTemp({
-                frontURL: `http://localhost:5173`,
+                frontURL: server_config.FRONTEND_URL,
                 token: password_recovery_token
             }),
             attachments: [],

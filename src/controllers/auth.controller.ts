@@ -47,6 +47,8 @@ export class AuthController {
 
     static async login(req: Request, res: Response, next: NextFunction) {
         try {
+            logger.info("Attempting to log in user...");
+            logger.debug(`Request body: ${JSON.stringify(req.body)}`);
             if(req.cookies.access_token){
                 logger.warn('User is already logged in, cannot login again.');
                 throw new SessionError('Ya hay una sesion activa, por favor cierra sesion para iniciar sesion nuevamente.', 401, 'Cannot login while session is active');

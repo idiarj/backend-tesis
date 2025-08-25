@@ -9,4 +9,4 @@ authRouter.post("/logout", AuthController.logout);
 authRouter.get("/me", AuthController.getCurrentUser);
 
 authRouter.post("/forgot-password", AuthController.verifyEmailForPasswordReset);
-authRouter.post("/reset-password", AuthController.resetPassword);
+authRouter.patch("/reset-password", AuthController.resetPassword);

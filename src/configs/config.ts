@@ -15,6 +15,7 @@ export const server_config = {
     DEPLOYED_SERVER_FLAG: process.env.DEPLOYED_SERVER_FLAG === "true" ? true : false,
     CORS_CONFIG: cors_config,
     NODE_ENV : process.env.NODE_ENV || "development",
+    FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
 
 }
 
@@ -41,4 +42,4 @@ export const mail_config = {
 }
 
 logger.info(`Server, database and mail configurations loaded successfully.`);
-
+logger.debug(`FRONT END URL: ${server_config.FRONTEND_URL}`);
