@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors/ValidationError.js";
 import { RequestModel } from "../models/requestModel.js";
 import { getLogger } from "../utils/logger.js";
 
@@ -30,6 +31,11 @@ export class RequestService{
     static async createRequest({id_usuario, id_animal, tipo_acogida}: {id_usuario: number, id_animal: number, tipo_acogida: string}) {
         let id_tipo_acogida = tipo_acogida === "adopt" ? 2 : 1;
         logger.info("Starting request creation...");
+        const existingRequest = await RequestModel.checkRequest({ id_user: id_usuario, id_animal });
+        if(existingRequest){
+            logger.warn("A request for this user and animal already exists.");
+            throw new ValidationError('Ya has enviado una solicitud para este animal. Por favor espera a que sea procesada.', 400, 'A request for this user and animal already exists.');
+        }
         const result = await RequestModel.insertAnimalRequest({
             id_usuario,
             id_animal,

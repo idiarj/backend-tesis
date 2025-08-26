@@ -90,12 +90,6 @@ export class AuthController {
 
     static async logout(req: Request, res: Response, next: NextFunction){
         try {
-            const {access_token} = req.cookies;
-            logger.info("Logging out user...");
-            if(!access_token){
-                throw new SessionError('No hay una sesion activa', 401, 'No access token found in cookies');
-            }
-
             res.clearCookie('access_token');
             res.status(200).json({
                 success: true,
@@ -168,21 +162,13 @@ export class AuthController {
         try {
             logger.info('Retrieving current user...');
             const { access_token } = req.cookies;
+            logger.debug(`${JSON.stringify(req.user)}`);
             logger.debug(`Access token received: ${access_token}`);
-            if (access_token === undefined) {
-                logger.debug('No access token found in cookies');
-                throw new SessionError('No hay una sesion activa', 401, 'No access token found in cookies');
-            }
-            const secret = server_config.ACCESS_TOKEN_SECRET;
-            if (!secret) {
-                throw new InternalError('Internal server error, please try again later.', 500, 'JWT secret for access token is not defined.');
-            }
-            const decoded = Token.verifyToken({ token: access_token, secret });
-            const {exp, iat, ...data} = decoded
+            
             res.status(200).json({
                 success: true,
                 message: 'Current user retrieved successfully',
-                data
+                data: req.user || null
             });
         } catch (error) {
             next(error);

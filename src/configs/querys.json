@@ -21,6 +21,8 @@
     "get_pending_request": "SELECT id_acogida, nom_usuario, email_usuario, tlf_usuario, nom_animal, ruta_imagen_an, des_acogida, des_estado FROM acogida a INNER JOIN estado_acogida ag ON a.id_acogida_est = ag.id_acogida_est INNER JOIN usuario u ON a.id_usuario = u.id_usuario INNER JOIN animal an ON a.id_animal = an.id_animal INNER JOIN tipo_acogida ta ON a.id_tipo_acogida = ta.id_tipo_acogida WHERE ag.des_estado = 'Pendiente'",
     "accept_animal_request": "UPDATE acogida SET id_acogida_est = 2 WHERE id_acogida = $1 RETURNING *",
     "reject_animal_request": "UPDATE acogida SET id_acogida_est = 3 WHERE id_acogida = $1 RETURNING *",
-    "delete_animal_request": "DELETE FROM acogida WHERE id_acogida = $1 RETURNING *"
-
+    "delete_animal_request": "DELETE FROM acogida WHERE id_acogida = $1 RETURNING *",
+    "check_existing_request": "SELECT * FROM acogida WHERE id_usuario = $1 AND id_animal = $2",
+    "get_user_profile": "SELECT perfil.id_perfil, des_perfil AS perfil FROM usuario INNER JOIN perfil ON usuario.id_perfil = perfil.id_perfil WHERE id_usuario = $1",
+    "get_profile_permissions": "SELECT des_opcion AS opcion FROM opcion o INNER JOIN perfil_opcion po ON o.id_opcion = po.id_opcion WHERE po.id_perfil = $1"
 }

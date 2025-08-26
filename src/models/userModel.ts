@@ -3,14 +3,11 @@ import { db } from "../instances/db.js";
 import { DatabaseError } from "../errors/DatabaseError.js";
 import { BaseError } from "../errors/BaseError.js";
 import { getLogger } from "../utils/logger.js";
+import { UserPermissions } from "../interfaces/authorization.interface.js";
 
 const logger = getLogger('USER');
 
 export class UserModel {
-
-
-
-
     static async insertUser({nom_usuario, pwd_usuario, email_usuario, tlf_usuario, id_perfil}: User): Promise<User> {
         try {
             logger.debug(`Inserting user ${nom_usuario} into the database...`);
@@ -21,7 +18,11 @@ export class UserModel {
             if (result.rows.length === 0) {
                 throw new DatabaseError("User registration failed", 500, "No rows returned from insert query");
             }
-            return result.rows[0];
+            // Convert perfil string to Perfil enum/type
+            return {
+                ...result.rows[0],
+                perfil: result.rows[0].perfil as UserPermissions["perfil"]
+            };
         } catch (error) {
             if (error instanceof BaseError) {
                 throw error;
@@ -260,6 +261,28 @@ export class UserModel {
         } catch (error) {
             await db.rollbackTransaction(client);
             //console.error("[UserModel] Error inserting password recovery token:", error);
+            if (error instanceof BaseError) {
+                throw error;
+            } else {
+                throw new DatabaseError('Internal server error, please try again later', 500, 'Unknown error');
+            }
+        }
+    }
+
+    static async getUserProfile({ id_usuario }: { id_usuario: number }): Promise<UserPermissions> {
+        try {
+            logger.debug(`Fetching user profile for user ID: ${id_usuario}`);
+            const key = "get_user_profile";
+            const params = [id_usuario];
+            const result = await db.executeQuery<UserPermissions>({ queryKey: key, params });
+            if (result.rows.length === 0) {
+                logger.debug(`No user profile found for user ID: ${id_usuario}`);
+                throw new DatabaseError('El usuario no tiene un perfil asignado', 404, 'No user profile found');
+            }
+            logger.debug(`User profile fetched successfully for user ID: ${id_usuario}`);
+            return result.rows[0];
+        } catch (error) {
+            
             if (error instanceof BaseError) {
                 throw error;
             } else {

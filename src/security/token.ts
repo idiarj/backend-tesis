@@ -22,9 +22,9 @@ export class Token{
         }
     }
 
-    static verifyToken({token, secret}: {token: string, secret: string}): JwtPayload {
+    static verifyToken<T extends JwtPayload>({token, secret}: {token: string, secret: string}): T {
         try {
-            const decoded = jsonwebtoken.verify(token, secret) as JwtPayload;
+            const decoded = jsonwebtoken.verify(token, secret) as T;
             log.debug('Token successfully verified');
             return decoded;
         } catch (error) {

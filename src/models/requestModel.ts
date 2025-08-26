@@ -136,4 +136,26 @@ export class RequestModel{
             return false;
         }
     }
+
+    static async checkRequest({id_user, id_animal}: {id_user: number, id_animal: number}): Promise<AnimalRequest | null>{
+        try {
+            logger.info('Checking if the actual user already has a request for this animal...');
+            const result = await db.executeQuery<AnimalRequest>({
+                queryKey: 'check_existing_request',
+                params: [id_user, id_animal]
+            });
+            if(!result.rows || result.rows.length === 0){
+                return null;
+            }
+            logger.info(`Existing request found for user ID ${id_user} and animal ID ${id_animal}`);
+            return result.rows[0];
+        } catch (error) {
+            if(error instanceof DatabaseError){
+                throw error
+            }else if(error instanceof Error){
+                throw new DatabaseError('Internal server error', 500, error.message || 'Unknown error')
+            }
+            return null
+        }
+    }
 }

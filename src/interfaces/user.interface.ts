@@ -1,5 +1,5 @@
 import z from 'zod';
-
+import { Perfil } from './authorization.interface.js';
 export interface User {
     id_usuario?: number;
     nom_usuario: string;
@@ -7,6 +7,7 @@ export interface User {
     email_usuario: string;
     tlf_usuario: string;
     id_perfil?: number;
+    perfil: Perfil;
 }
 
 export interface LoginCredentials {
