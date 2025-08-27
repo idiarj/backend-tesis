@@ -19,28 +19,29 @@ export class AdminController {
         try {
             const { id_usuario, id_perfil } = req.body;
             logger.info(`Assigning profile ${id_perfil} to user ${id_usuario}`);
-            // const result = await UserService.assignProfile(id_usuario, id_perfil);
-            const result = {
-                mock: true,
-                message: 'Profile assigned successfully',
-                user: { id_usuario, id_perfil }
-            };
+            const result = await PermissionService.assignProfileToUser({ id_usuario, id_perfil });
+            // const result = {
+            //     mock: true,
+            //     message: 'Profile assigned successfully',
+            //     user: { id_usuario, id_perfil }
+            // };
             res.status(200).json(result);
         } catch (error) {
             next(error);
         }
     }
 
-    static async givePermissionsToProfile(req: Request, res: Response, next: NextFunction) {
+    static async managePermissionsForProfile(req: Request, res: Response, next: NextFunction) {
         try {
             const { id_perfil, permissions } = req.body;
-            logger.info(`Giving permissions to profile ${id_perfil}`);
-            // const result = await ProfileService.givePermissions(id_perfil, permissions);
-            const result = {
-                mock: true,
-                message: 'Permissions assigned successfully',
-                profile: { id_perfil, permissions }
-            };
+            logger.info(`Managing permissions for profile ${id_perfil}`);
+            logger.debug(`Permissions to manage: ${JSON.stringify(permissions)}`);
+            const result = await PermissionService.manageProfilePermissions({ id_perfil, permissions });
+            // const result = {
+            //     mock: true,
+            //     message: 'Permissions assigned successfully',
+            //     profile: { id_perfil, permissions_given: permissions }
+            // };
             res.status(200).json(result);
         } catch (error) {
             next(error);
@@ -55,4 +56,5 @@ export class AdminController {
             next(error);
         }
     }
+
 }

@@ -8,6 +8,7 @@ import { UserPermissions } from "../interfaces/authorization.interface.js";
 const logger = getLogger('USER');
 
 export class UserModel {
+    
     static async insertUser({nom_usuario, pwd_usuario, email_usuario, tlf_usuario, id_perfil}: User): Promise<User> {
         try {
             logger.debug(`Inserting user ${nom_usuario} into the database...`);
@@ -304,4 +305,28 @@ export class UserModel {
             }
         }
     }
+
+    static async assignProfileToUser({id_usuario, id_perfil}: {id_usuario: number, id_perfil: number}) {
+        try {
+            const resultSet = await db.executeRawQuery({
+                query: 'SELECT id_perfil FROM usuario WHERE id_usuario = $1',
+                params: [id_usuario]    
+            });
+            const id_perfil_fromDB = resultSet.rows[0]?.id_perfil;
+            if(id_perfil_fromDB === id_perfil) {
+                throw new DatabaseError('El usuario ya tiene este perfil asignado.', 400, `El perfil de usuario que se le esta intentando asignar es el mismo que ya tiene asignado.`);
+            }
+            const queryKey = 'assign_profile_to_user'
+            const result = await db.executeQuery<User>({
+                queryKey,
+                params: [id_usuario, id_perfil]
+            })
+            return result.rows;
+        } catch (error) {
+            if(error instanceof BaseError) throw error;
+            throw new DatabaseError('Error al asignar el perfil al usuario en la base de datos', 500, 'Unknown Error');
+        }
+    }
+
+
 }

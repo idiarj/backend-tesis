@@ -10,4 +10,4 @@ export const adminRouter = Router();
 adminRouter.get('/profiles', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.getProfiles);
 adminRouter.get('/users', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.getUsers);
 adminRouter.post('/assign-profile', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.assignProfile);
-adminRouter.post('/give-permissions', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.givePermissionsToProfile);
+adminRouter.post('/manage-permissions', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.managePermissionsForProfile);
