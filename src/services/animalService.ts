@@ -74,6 +74,20 @@ export class AnimalService {
         }
     }
 
+    static async getLastAnimal({adoptable}: {adoptable: string}): Promise<responseSuccess>{
+        logger.debug('Starting to get last animal added');
+        const adoptBoolean = adoptable === 'true';
+        const data = await AnimaModel.getLastAnimal({
+            adoptable: adoptBoolean
+        });
+        logger.debug(`Retrieval of last animal done succesfully`);
+        return {
+            success: true,
+            message: 'El ultimo animal ha sido obtenido correctamente',
+            data
+        }
+    }
+
     static async getAnimal({id_animal}: {id_animal: number}): Promise<responseSuccess>{
         logger.debug(`Getting specific animal with id ${id_animal}`)
         const data = await AnimaModel.getAnimalById({id_animal})

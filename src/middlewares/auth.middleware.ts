@@ -8,7 +8,7 @@ import { UserModel } from "../models/userModel.js";
 
 const logger = getLogger("AUTH_MIDDLEWARE");
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticationMidd = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { access_token } = req.cookies;
         if(!access_token) throw new SessionError('Se debe tener una sesion activa para ejecutar esta accion.', 401, 'No access token provided in cookies.');
@@ -32,12 +32,12 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         next();
     } catch (error) {
         if (error instanceof SessionError) {
-            logger.warn(`Session error in authMiddleware: ${error.message}`);
+            logger.warn(`Session error in authenticationMidd: ${error.message}`);
         } else {
             if (error instanceof Error) {
-                logger.error(`Error in authMiddleware: ${error.message}`);
+                logger.error(`Error in authenticationMidd: ${error.message}`);
             } else {
-                logger.error(`Error in authMiddleware: ${JSON.stringify(error)}`);
+                logger.error(`Error in authenticationMidd: ${JSON.stringify(error)}`);
             }
         }
         next(error);

@@ -290,4 +290,18 @@ export class UserModel {
             }
         }
     }
+
+    static async getUsers(){
+        try {
+            const key = "get_users";
+            const result = await db.executeQuery({ queryKey: key, params: [] });
+            return result.rows;
+        } catch (error) {
+            if (error instanceof BaseError) {
+                throw error;
+            } else {
+                throw new DatabaseError('Internal server error, please try again later', 500, 'Unknown error');
+            }
+        }
+    }
 }

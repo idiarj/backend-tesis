@@ -1,15 +1,16 @@
 import { Router } from "express";
 import { AnimalController } from "../controllers/animal.controller.js";
 import { upload } from "../middlewares/upload.middleware.js";
-import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { authenticationMidd } from "../middlewares/auth.middleware.js";
 import { authorizationMidd } from "../middlewares/role.middleware.js";
 import { Perfil } from "../interfaces/authorization.interface.js";
 
 export const animalRouter = Router()
 
-animalRouter.post('/', authMiddleware, upload.single('catPhoto'), AnimalController.AnimalPOST);
+animalRouter.post('/', authenticationMidd,  authorizationMidd(Perfil.VET_ADMIN, Perfil.ADMIN), upload.single('catPhoto'), AnimalController.AnimalPOST);
 animalRouter.get('/',  AnimalController.AllAnimalsGET);
 animalRouter.get('/:id_animal', AnimalController.AnimalDetailGET);
-animalRouter.get('/sponsorships/:id_usuario', authMiddleware, AnimalController.MySponsorhipsGET);
-animalRouter.put('/', authMiddleware, AnimalController.AnimalPUT);
-animalRouter.delete('/:id_animal', authMiddleware, AnimalController.AnimalDELETE);
+animalRouter.get('/last', AnimalController.getLastCat)
+animalRouter.get('/sponsorships/:id_usuario', authenticationMidd, AnimalController.MySponsorhipsGET);
+animalRouter.put('/', authenticationMidd, AnimalController.AnimalPUT);
+animalRouter.delete('/:id_animal', authenticationMidd, authorizationMidd(Perfil.VET_ADMIN, Perfil.ADMIN), AnimalController.AnimalDELETE);

@@ -15,7 +15,8 @@ export class AnimalController {
             logger.debug(`Request body before processing: ${JSON.stringify(req.body)}`);
             req.body = {
                 ...req.body,
-                peso_animal: Number(req.body.peso_animal)
+                peso_animal: Number(req.body.peso_animal),
+                adoptable_animal: req.body.adoptable_animal === 'true'
             }
             logger.debug(`Request body: ${JSON.stringify(req.body)}`);
             //logger.debug(`File uploaded: ${req.file ? req.file.path : 'No file uploaded'}`);
@@ -96,6 +97,23 @@ export class AnimalController {
             const response = await AnimalService.deleteAnimal({ id_animal: Number(id_animal) });
             logger.debug(`Response from AnimalService.deleteAnimal: ${response.success}`);
             res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async getLastCat(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { adoptable } = req.query;
+            logger.debug(`Request query: ${JSON.stringify(req.query)}`);
+            logger.info('getLastCat called');
+
+            const adoptableStr = typeof adoptable === 'string' ? adoptable : '';
+
+            const result = await AnimalService.getLastAnimal({
+                adoptable: adoptableStr
+            });
+            res.status(200).json(result);
         } catch (error) {
             next(error);
         }

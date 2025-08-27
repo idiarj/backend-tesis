@@ -17,10 +17,11 @@ export class AnimaModel{
                 especie_animal, 
                 edad_animal, 
                 genero_animal, 
-                peso_animal 
-                } = animal
+                peso_animal,
+                adoptable_animal
+            } = animal
             const key = 'insertAnimal';
-            const params: any[] = [nom_animal, especie_animal, edad_animal, genero_animal, peso_animal];
+            const params: any[] = [nom_animal, especie_animal, edad_animal, genero_animal, peso_animal, adoptable_animal];
             const result = await db.executeQuery<Animal>({
                 queryKey: key,
                 params
@@ -72,6 +73,27 @@ export class AnimaModel{
             }
             logger.info(`Retrieved ${result.rows.length} animals`)
             return result.rows;
+        } catch (error) {
+            if(error instanceof DatabaseError){
+                throw error
+            }else if(error instanceof Error){
+                throw new DatabaseError('Internal server error', 500, error.message || 'Unknown error')
+            }
+            return null
+        }
+    }
+
+    static async getLastAnimal({adoptable}: {adoptable: boolean}): Promise<Animal[] | null>{
+        try {
+            logger.info('Starting retrieval of last animal...')
+            const key = 'get_last_cat';
+            const result = await db.executeQuery<Animal>({queryKey: key, params: [adoptable]})
+            if(!result.rows || result.rows.length === 0){
+                logger.info('No last animal found')
+                return null
+            }
+            logger.info(`Retrieved ${result.rows.length} last animals`)
+            return result.rows
         } catch (error) {
             if(error instanceof DatabaseError){
                 throw error

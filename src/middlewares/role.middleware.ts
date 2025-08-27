@@ -10,13 +10,11 @@ export const authorizationMidd =
   (...allowedRoles: Perfil[]) =>
   (req: Request, res: Response, next: NextFunction) => {
     const { user } = req;
-    const profiles = (req as any).profiles as Perfil[] | undefined;
 
     // logger.debug('User:', user);
     // logger.debug('Profiles:', profiles);
     // logger.debug('AllowedRoles:', allowedRoles);
     logger.debug(`${JSON.stringify(user)}`);
-    logger.debug(`${JSON.stringify(profiles)}`);
     logger.debug(`User with profile ${user?.perfil} is trying to access a resource that requires one of the following roles: ${allowedRoles.join(', ')}`);
 
     if (

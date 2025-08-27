@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getLogger } from "../utils/logger.js";
+import { PermissionService } from "../services/permissionService.js";
 
 const logger = getLogger("ADMIN_CONTROLLER");
 
@@ -7,14 +8,7 @@ export class AdminController {
     static async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
             logger.info('getUsers called');
-            const result = {
-                mock: true,
-                message: 'Users retrieved successfully',
-                users: [
-                    { id_usuario: 1, nom_usuario: "John Doe", email_usuario: "john@example.com" },
-                    { id_usuario: 2, nom_usuario: "Jane Smith", email_usuario: "jane@example.com" }
-                ]
-            }
+            const result = await PermissionService.getUsers();
             res.status(200).json(result);
         } catch (error) {
             next(error);
@@ -47,6 +41,15 @@ export class AdminController {
                 message: 'Permissions assigned successfully',
                 profile: { id_perfil, permissions }
             };
+            res.status(200).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async getProfiles(req: Request, res: Response, next: NextFunction) {
+        try {
+            const result = await PermissionService.getProfiles();
             res.status(200).json(result);
         } catch (error) {
             next(error);

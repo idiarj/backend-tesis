@@ -8,6 +8,7 @@ export interface Animal {
     edad_animal: string;
     genero_animal: string;
     peso_animal: number;
+    adoptable_animal: boolean;
 }
 
 export interface AnimalRequest {

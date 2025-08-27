@@ -9,8 +9,9 @@
     "insertPasswordRecoveryToken": "INSERT INTO recuperacion_contrasena_token (id_usuario, token_hash, expira_en) VALUES ($1, $2, NOW() + INTERVAL '15 minutes') RETURNING *",
     "updatePasswordRecoveryTokenUsage": "UPDATE recuperacion_contrasena_token SET usado = true WHERE id_token_recup= $1",
     "verifyPasswordRecoveryToken": "SELECT * FROM recuperacion_contrasena_token WHERE usado = false AND expira_en > NOW() AND id_usuario = $1",
-    "insertAnimal": "INSERT INTO animal (nom_animal, especie_animal, edad_animal, genero_animal, peso_animal) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    "insertAnimal": "INSERT INTO animal (nom_animal, especie_animal, edad_animal, genero_animal, peso_animal, adoptable_animal) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
     "getAnimals": "SELECT * FROM animal",
+    "get_last_cat": "SELECT nom_animal FROM gato WHERE adoptable_animal = $1 BY agregado_a DESC LIMIT 1;",
     "getAdoptableAnimals": "SELECT * FROM animal WHERE adoptable_animal = $1",
     "getAnimalById": "SELECT * FROM animal WHERE id_animal = $1",
     "getAnimalsByUserId": "SELECT * FROM acogida INNER JOIN animal ON acogida.id_animal = animal.id_animal WHERE id_usuario = $1 AND acogida.id_tipo_acogida = 1",
@@ -24,5 +25,7 @@
     "delete_animal_request": "DELETE FROM acogida WHERE id_acogida = $1 RETURNING *",
     "check_existing_request": "SELECT * FROM acogida WHERE id_usuario = $1 AND id_animal = $2",
     "get_user_profile": "SELECT perfil.id_perfil, des_perfil AS perfil FROM usuario INNER JOIN perfil ON usuario.id_perfil = perfil.id_perfil WHERE id_usuario = $1",
-    "get_profile_permissions": "SELECT des_opcion AS opcion FROM opcion o INNER JOIN perfil_opcion po ON o.id_opcion = po.id_opcion WHERE po.id_perfil = $1"
+    "get_profile_permissions": "SELECT des_opcion AS opcion FROM opcion o INNER JOIN perfil_opcion po ON o.id_opcion = po.id_opcion WHERE po.id_perfil = $1",
+    "get_profiles": "SELECT id_perfil, des_perfil AS perfil FROM perfil",
+    "get_users": "SELECT id_usuario, nom_usuario, email_usuario, des_perfil FROM usuario u INNER JOIN perfil p ON u.id_perfil = p.id_perfil ORDER BY u.id_perfil"
 }

@@ -7,6 +7,12 @@ export enum Perfil {
 }
 
 
+export enum Options {
+  MED = 'Panel Medico',
+  ADMIN = 'Administracion',
+}
+
+
 export type UserPermissions = {
   id_perfil: number;
   perfil: Perfil;
