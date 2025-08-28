@@ -96,7 +96,13 @@ export class AuthController {
 
     static async logout(req: Request, res: Response, next: NextFunction){
         try {
-            res.clearCookie('access_token');
+
+            let sameSite: 'lax' | 'strict' | 'none' = server_config.NODE_ENV === 'cloud' ? 'none' : 'lax';
+            let secure: boolean = server_config.NODE_ENV === 'cloud';
+        res.clearCookie('access_token', {
+            sameSite: sameSite,
+            secure: secure
+        });
             res.status(200).json({
                 success: true,
                 message: 'Sesión cerrada correctamente'
