@@ -15,7 +15,7 @@ const logger = getLogger('AuthService')
 export class AuthService {
 
     static async registerUser(user: User){
-        const { nom_usuario, pwd_usuario, email_usuario, tlf_usuario } = user;
+        const { img_usuario_url, nom_usuario, pwd_usuario, email_usuario, tlf_usuario } = user;
         logger.info('Registering user...');
         // TODO: Validate user data here with zod
         const existingUser = await UserModel.validateUser({ nom_usuario });
@@ -41,6 +41,7 @@ export class AuthService {
         const hashedPassword = await HashManager.hashData({data: pwd_usuario});
 
         await UserModel.insertUser({
+            img_usuario_url,
             nom_usuario,
             pwd_usuario: hashedPassword,
             email_usuario,
@@ -144,13 +145,14 @@ export class AuthService {
         return {success: true, message: "Password reset successfully"};
     }
 
-    static async updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario}: {id_usuario: number, nom_usuario: string, email_usuario: string, tlf_usuario: string}): Promise<responseSuccess> {
+    static async updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario, img_usuario_url}: {id_usuario: number, nom_usuario: string, email_usuario: string, tlf_usuario: string, img_usuario_url: string}): Promise<responseSuccess> {
         logger.info(`Updating user with id: ${id_usuario}`);
-        const data =await UserModel.updateUser({
+        const data = await UserModel.updateUser({
             id_usuario,
             nom_usuario,
             email_usuario,
-            tlf_usuario
+            tlf_usuario,
+            img_usuario_url
         });
         logger.info(`User updated successfully: ${nom_usuario}`);
         return { success: true, message: "User updated successfully", data};

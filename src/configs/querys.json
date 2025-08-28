@@ -1,10 +1,10 @@
 {
-    "registerUser": "INSERT INTO usuario (nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    "registerUser": "INSERT INTO usuario (img_usuario_url,nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
     "validateUser": "SELECT nom_usuario FROM usuario WHERE LOWER(nom_usuario) = LOWER($1)",
     "validateEmail": "SELECT id_usuario, email_usuario FROM usuario WHERE LOWER(email_usuario) = LOWER($1)",
     "validatePhoneNumber": "SELECT tlf_usuario FROM usuario WHERE tlf_usuario = $1",
     "checkUserCredentials": "SELECT id_usuario, nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil FROM usuario WHERE LOWER(nom_usuario) = LOWER($1) OR LOWER(email_usuario) = LOWER($1)",
-    "update_user": "UPDATE usuario SET nom_usuario = $2, email_usuario = $3, tlf_usuario = $4 WHERE id_usuario = $1 RETURNING id_usuario, nom_usuario, email_usuario, tlf_usuario, id_perfil",
+    "update_user": "UPDATE usuario SET nom_usuario = $2, email_usuario = $3, tlf_usuario = $4, img_usuario_url = $5 WHERE id_usuario = $1 RETURNING id_usuario, img_usuario_url, nom_usuario, email_usuario, tlf_usuario, id_perfil",
     "getUserById": "SELECT * FROM usuario WHERE id_usuario = $1",
     "updatePassword": "UPDATE usuario SET pwd_usuario = $1 WHERE email_usuario = $2 RETURNING id_usuario",
     "insertPasswordRecoveryToken": "INSERT INTO recuperacion_contrasena_token (id_usuario, token_hash, expira_en) VALUES ($1, $2, NOW() + INTERVAL '15 minutes') RETURNING *",
@@ -28,7 +28,7 @@
     "get_user_profile": "SELECT perfil.id_perfil, des_perfil AS perfil FROM usuario INNER JOIN perfil ON usuario.id_perfil = perfil.id_perfil WHERE id_usuario = $1",
     "get_profile_permissions": "SELECT o.id_opcion, des_opcion AS opcion FROM opcion o INNER JOIN perfil_opcion po ON o.id_opcion = po.id_opcion WHERE po.id_perfil = $1",
     "get_profiles": "SELECT id_perfil, des_perfil AS perfil FROM perfil",
-    "get_users": "SELECT id_usuario, nom_usuario, email_usuario, p.id_perfil, des_perfil FROM usuario u INNER JOIN perfil p ON u.id_perfil = p.id_perfil ORDER BY u.id_perfil",
+    "get_users": "SELECT id_usuario, email_usuario, p.id_perfil, des_perfil FROM usuario u INNER JOIN perfil p ON u.id_perfil = p.id_perfil ORDER BY u.id_perfil",
     "assign_profile_to_user": "UPDATE usuario SET id_perfil = $2 WHERE id_usuario = $1 RETURNING *",
     "give_permission_to_profile": "INSERT INTO perfil_opcion (id_perfil, id_opcion) VALUES ($1, $2)",
     "remove_permission_from_profile": "DELETE FROM perfil_opcion WHERE id_perfil = $1 AND id_opcion = $2"

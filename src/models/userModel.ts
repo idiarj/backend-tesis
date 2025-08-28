@@ -8,13 +8,13 @@ import { UserPermissions } from "../interfaces/authorization.interface.js";
 const logger = getLogger('USER');
 
 export class UserModel {
-    
-    static async insertUser({nom_usuario, pwd_usuario, email_usuario, tlf_usuario, id_perfil}: User): Promise<User> {
+
+    static async insertUser({img_usuario_url, nom_usuario, pwd_usuario, email_usuario, tlf_usuario, id_perfil}: User): Promise<User> {
         try {
             logger.debug(`Inserting user ${nom_usuario} into the database...`);
             const key = "registerUser";
             id_perfil = id_perfil || 1;
-            const params = [nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil];
+            const params = [img_usuario_url, nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rows.length === 0) {
                 throw new DatabaseError("User registration failed", 500, "No rows returned from insert query");
@@ -144,12 +144,12 @@ export class UserModel {
         }
     }
 
-    static async updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario}: {id_usuario: number, nom_usuario: string, email_usuario: string, tlf_usuario: string}): Promise<any> {
+    static async updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario, img_usuario_url}: {id_usuario: number, nom_usuario: string, email_usuario: string, tlf_usuario: string, img_usuario_url: string}): Promise<any> {
         try {
             logger.debug(`Updating user ${nom_usuario}...`);
             const key = "update_user";
 
-            const params = [id_usuario, nom_usuario, email_usuario, tlf_usuario];
+            const params = [id_usuario, nom_usuario, email_usuario, tlf_usuario, img_usuario_url];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rowCount === 0) {
                 throw new DatabaseError('Internal server error, please try again later', 500, `Update for user ${id_usuario} failed.`);

@@ -1,6 +1,7 @@
 import z from 'zod';
 import { Perfil } from './authorization.interface.js';
 export interface User {
+    img_usuario_url: string;
     id_usuario?: number;
     nom_usuario: string;
     pwd_usuario?: string;

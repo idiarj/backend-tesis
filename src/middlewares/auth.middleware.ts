@@ -25,6 +25,7 @@ export const authenticationMidd = async (req: Request, res: Response, next: Next
         // Map token payload to User type
         req.user = {
             id_usuario: token.id_usuario,
+            img_usuario_url: user.img_usuario_url,
             nom_usuario: user.nom_usuario,
             email_usuario: user.email_usuario,
             tlf_usuario: user.tlf_usuario,

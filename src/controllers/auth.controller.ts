@@ -34,7 +34,8 @@ export class AuthController {
                 nom_usuario,
                 email_usuario,
                 pwd_usuario,
-                tlf_usuario
+                tlf_usuario,
+                img_usuario_url: 'https://res.cloudinary.com/dqc0yku26/image/upload/v1756355363/gatoFeliz/icons/cat_orange_cat.png'
             });
 
 
@@ -178,17 +179,18 @@ export class AuthController {
     static async updateUser(req: Request, res: Response, next: NextFunction){
         try {
             logger.info('Updating current user info...');
-            const {id_usuario, nom_usuario, tlf_usuario, email_usuario } = req.body
+            const {id_usuario, nom_usuario, tlf_usuario, email_usuario, img_usuario_url } = req.body
             logger.debug(`Body of the request on: ${JSON.stringify(req.body)}`)
-            const result = await AuthService.updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario });
+            const result = await AuthService.updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario, img_usuario_url });
             // const result = {
             //     mock: true,
             //     message: 'Actualizacion de usuario exitosa.'
             // }
 
             if(result.success && result.data){
-                const userData = result.data as { id_usuario: number; nom_usuario: string; email_usuario: string; tlf_usuario: string };
+                const userData = result.data as { id_usuario: number; nom_usuario: string; email_usuario: string; tlf_usuario: string; img_usuario_url: string };
                 req.user = {
+                    img_usuario_url: userData.img_usuario_url,
                     id_usuario: userData.id_usuario,
                     nom_usuario: userData.nom_usuario,
                     email_usuario: userData.email_usuario,
