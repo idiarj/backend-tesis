@@ -174,4 +174,32 @@ export class AuthController {
             next(error);
         }
     }
+
+    static async updateUser(req: Request, res: Response, next: NextFunction){
+        try {
+            logger.info('Updating current user info...');
+            const {id_usuario, nom_usuario, tlf_usuario, email_usuario } = req.body
+            logger.debug(`Body of the request on: ${JSON.stringify(req.body)}`)
+            const result = await AuthService.updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario });
+            // const result = {
+            //     mock: true,
+            //     message: 'Actualizacion de usuario exitosa.'
+            // }
+
+            if(result.success && result.data){
+                const userData = result.data as { id_usuario: number; nom_usuario: string; email_usuario: string; tlf_usuario: string };
+                req.user = {
+                    id_usuario: userData.id_usuario,
+                    nom_usuario: userData.nom_usuario,
+                    email_usuario: userData.email_usuario,
+                    tlf_usuario: userData.tlf_usuario
+                }
+            }
+            logger.debug(`Update result: ${JSON.stringify(req.user)}`);
+
+            res.status(200).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
 }

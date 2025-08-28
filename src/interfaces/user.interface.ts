@@ -3,11 +3,11 @@ import { Perfil } from './authorization.interface.js';
 export interface User {
     id_usuario?: number;
     nom_usuario: string;
-    pwd_usuario: string;
+    pwd_usuario?: string;
     email_usuario: string;
     tlf_usuario: string;
     id_perfil?: number;
-    perfil: Perfil;
+    perfil?: Perfil;
 }
 
 export interface LoginCredentials {

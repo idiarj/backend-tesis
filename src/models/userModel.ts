@@ -122,7 +122,7 @@ export class UserModel {
         }
     }
 
-    static async getUserById({id_usuario}: { id_usuario: number }): Promise<User | null> {
+    static async getUserById({id_usuario}: { id_usuario: number }): Promise<User> {
         try {
             logger.debug(`Fetching user by ID: ${id_usuario}`);
             const key = "getUserById";
@@ -130,7 +130,7 @@ export class UserModel {
             const params = [id_usuario];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rows.length === 0) {
-                return null; // No user found
+                throw new DatabaseError('User not found', 404, 'User not found');
             }
             logger.debug(`User found by ID ${id_usuario}: ${JSON.stringify(result.rows[0])}`);
             return result.rows[0]; // Return the found user
@@ -144,15 +144,15 @@ export class UserModel {
         }
     }
 
-    static async updateUser({nom_usuario, pwd_usuario, email_usuario, tlf_usuario}: User): Promise<User> {
+    static async updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario}: {id_usuario: number, nom_usuario: string, email_usuario: string, tlf_usuario: string}): Promise<any> {
         try {
             logger.debug(`Updating user ${nom_usuario}...`);
-            const key = "updateUser";
+            const key = "update_user";
 
-            const params = [nom_usuario, email_usuario, pwd_usuario, tlf_usuario];
+            const params = [id_usuario, nom_usuario, email_usuario, tlf_usuario];
             const result = await db.executeQuery({ queryKey: key, params });
-            if (result.rows.length === 0) {
-                throw new DatabaseError('Internal server error, please try again later', 500, "User update failed");
+            if (result.rowCount === 0) {
+                throw new DatabaseError('Internal server error, please try again later', 500, `Update for user ${id_usuario} failed.`);
             }
             logger.debug(`User ${nom_usuario} updated successfully: ${JSON.stringify(result.rows[0])}`);
             return result.rows[0]; // Return the updated user
@@ -327,6 +327,4 @@ export class UserModel {
             throw new DatabaseError('Error al asignar el perfil al usuario en la base de datos', 500, 'Unknown Error');
         }
     }
-
-
 }

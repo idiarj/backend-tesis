@@ -19,14 +19,15 @@ export const authenticationMidd = async (req: Request, res: Response, next: Next
         if (typeof token.id_usuario !== "number") {
             throw new SessionError('Token inválido: id_usuario no definido.', 401, 'id_usuario is missing in token.');
         }
-
+        const user = await UserModel.getUserById({ id_usuario: token.id_usuario });
         const userProfile = await UserModel.getUserProfile({ id_usuario: token.id_usuario });
+        console.log(userProfile);
         // Map token payload to User type
         req.user = {
-            nom_usuario: token.nom_usuario,
-            pwd_usuario: token.pwd_usuario,
-            email_usuario: token.email_usuario,
-            tlf_usuario: token.tlf_usuario,
+            id_usuario: token.id_usuario,
+            nom_usuario: user.nom_usuario,
+            email_usuario: user.email_usuario,
+            tlf_usuario: user.tlf_usuario,
             ...userProfile
         };
         next();

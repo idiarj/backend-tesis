@@ -35,6 +35,9 @@ export class AuthService {
         }
         logger.debug(`User ${nom_usuario}, email ${email_usuario} and phone ${tlf_usuario} are not already registered, proceeding with registration...`);
 
+        if (!pwd_usuario) {
+            throw new ValidationError('Password is required for registration.', 400);
+        }
         const hashedPassword = await HashManager.hashData({data: pwd_usuario});
 
         await UserModel.insertUser({
@@ -58,6 +61,9 @@ export class AuthService {
         const credentials = await UserModel.checkCredentials({ identifier_usuario, pwd_usuario });
         if (!credentials) {
             throw new AuthError(`Credenciales incorrectas.`, 401, `User with identifier ${identifier_usuario} not found.`);
+        }
+        if (!credentials.pwd_usuario) {
+            throw new AuthError('Credenciales incorrectas', 401, `Password not found for user with identifier ${identifier_usuario}`);
         }
         const validPwd = await HashManager.verifyData({
             hashedData: credentials.pwd_usuario,
@@ -136,5 +142,17 @@ export class AuthService {
         logger.info(`Password reset successfully for user: ${email_usuario}`);
         
         return {success: true, message: "Password reset successfully"};
+    }
+
+    static async updateUser({id_usuario, nom_usuario, email_usuario, tlf_usuario}: {id_usuario: number, nom_usuario: string, email_usuario: string, tlf_usuario: string}): Promise<responseSuccess> {
+        logger.info(`Updating user with id: ${id_usuario}`);
+        const data =await UserModel.updateUser({
+            id_usuario,
+            nom_usuario,
+            email_usuario,
+            tlf_usuario
+        });
+        logger.info(`User updated successfully: ${nom_usuario}`);
+        return { success: true, message: "User updated successfully", data};
     }
 }
