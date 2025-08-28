@@ -7,7 +7,13 @@ import { Perfil } from "../interfaces/authorization.interface.js";
 
 export const adminRouter = Router();
 
-adminRouter.get('/profiles', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.getProfiles);
-adminRouter.get('/users', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.getUsers);
-adminRouter.post('/assign-profile', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.assignProfile);
-adminRouter.post('/manage-permissions', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.managePermissionsForProfile);
+// adminRouter.get('/profiles', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.getProfiles);
+// adminRouter.get('/users', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.getUsers);
+// adminRouter.post('/assign-profile', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.assignProfile);
+// adminRouter.post('/manage-permissions', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN), AdminController.managePermissionsForProfile);
+
+adminRouter.get('/profiles',  AdminController.getProfiles);
+adminRouter.get('/users', AdminController.getUsers);
+adminRouter.post('/assign-profile', AdminController.assignProfile);
+adminRouter.post('/manage-permissions', AdminController.managePermissionsForProfile);
+

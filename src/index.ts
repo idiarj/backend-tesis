@@ -3,9 +3,10 @@ import { authRouter, animalRouter, requestRouter, adminRouter } from './routes/d
 import { server_config } from './configs/config.js';
 import { getLogger } from './utils/logger.js';
 import morgan from 'morgan';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import ImageService from './services/imageService.js';
 
 
 const loggerApp = getLogger('APP')
@@ -29,6 +30,16 @@ app.use(cors(cors_config));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+app.get('/icons', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const icons = await ImageService.listAllFromFolder('gatoFeliz/icons');
+        res.status(200).json(icons);
+    } catch (error) {
+        next(error);
+    }
+})
 
 app.use('/auth', authRouter);
 app.use('/animal', animalRouter);

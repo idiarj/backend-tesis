@@ -1,69 +1,82 @@
-// // import path, { sep } from 'path';
-// // import { fileURLToPath } from 'url';
-// // import ImageService from "./services/imageService.js";
-
-// // const __filename = fileURLToPath(import.meta.url);
-// // const __dirname = path.dirname(__filename);
-
-// // const imagePath = path.resolve(__dirname, './assets/photo_2025-08-03_02-15-26.jpg');
-
-// // async function test() {
-// //     try {
-// //         const result = await ImageService.uploadImage(imagePath);
-// //         console.log('Upload result:', result);
-// //     } catch (error) {
-// //         console.error('Error during image operations:', error);
-// //     }
-// // }
-
-// // test();
-
-// // import { AnimalService } from "./services/animalService.js";
-
-// // async function test() {
-// //     try {
-// //         const response = await AnimalService.getAnimals();
-// //         console.log('Response:', response);
-// //     } catch (error) {
-// //         console.error('Error during animal operations:', error);
-// //     }
-// // }
-
-// // test();
-
-
-// import { AnimalService } from "./services/animalService.js";
-// import fs from 'fs';
-// import path from 'path';
+// import path, { sep } from 'path';
 // import { fileURLToPath } from 'url';
+// import ImageService from "./services/imageService.js";
 
-// // AnimalService.addAnimal({})
-
-
-// // const insertHospitalizedAnimals = async (animals) => {
-// //     try {
-// //         for (const animal of animals) {
-// //             await AnimalService.addAnimal(animal);
-// //         }
-// //     } catch (error) {
-// //         console.error('Error inserting hospitalized animals:', error);
-// //     }
-// // };
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 
-// const imagesDir = path.resolve(__dirname, './cats'); // Change to your images folder
+// const imagePath = path.resolve(__dirname, './assets/photo_2025-08-03_02-15-26.jpg');
 
-// // Read all files in the directory and filter for images
-// const getAllImages = (dir: string) => {
-//     const files = fs.readdirSync(dir);
-//     // Filter for common image extensions
-//     return files.filter(file =>
-//         /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)
-//     ).map(file => path.join(dir, file));
-// };
+// async function test() {
+//     try {
+//         const result = await ImageService.uploadImage(imagePath);
+//         console.log('Upload result:', result);
+//     } catch (error) {
+//         console.error('Error during image operations:', error);
+//     }
+// }
+
+// test();
+
+// import { AnimalService } from "./services/animalService.js";
+
+// async function test() {
+//     try {
+//         const response = await AnimalService.getAnimals();
+//         console.log('Response:', response);
+//     } catch (error) {
+//         console.error('Error during animal operations:', error);
+//     }
+// }
+
+// test();
+
+
+
+// AnimalService.addAnimal({})
+
+
+// const insertHospitalizedAnimals = async (animals) => {
+//     try {
+//         for (const animal of animals) {
+    //             await AnimalService.addAnimal(animal);
+    //         }
+    //     } catch (error) {
+        //         console.error('Error inserting hospitalized animals:', error);
+        //     }
+        // };
+import ImageService from "./services/imageService.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const imagesDir = path.resolve(__dirname, './cats'); // Change to your images folder
+
+// Read all files in the directory and filter for images
+const getAllImages = (dir: string) => {
+    const files = fs.readdirSync(dir);
+    // Filter for common image extensions
+    return files.filter(file =>
+        /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)
+    ).map(file => path.join(dir, file));
+};
 
 // const imagePaths = getAllImages(imagesDir);
+// const names = ['white_cat'];
+// imagePaths.forEach(async (imagePath, index) => {
+//     console.log('Found image:', imagePath);
+//     await ImageService.uploadImage({filePath: imagePath, catId: names[index] });
+// });
+
+const icons = await ImageService.listAllFromFolder('gatoFeliz/icons');
+
+
+
+
+console.log(icons);
+
 
 //  const insertAllAnimalsTest = async () => {
 //     try {
@@ -95,9 +108,15 @@
 // //console.log(imagePaths);
 
 
-import { PermissionService } from "./services/permissionService.js";
+// import { PermissionService } from "./services/permissionService.js";
 
 
-const test = await PermissionService.getPermissionsFromDB({id_usuario: 1});
+// const test = await PermissionService.getPermissionsFromDB({id_usuario: 1});
 
-console.log(JSON.stringify(test, null, 2));
+// console.log(JSON.stringify(test, null, 2));
+
+
+
+
+
+
