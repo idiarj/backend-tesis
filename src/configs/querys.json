@@ -28,7 +28,7 @@
     "get_user_profile": "SELECT perfil.id_perfil, des_perfil AS perfil FROM usuario INNER JOIN perfil ON usuario.id_perfil = perfil.id_perfil WHERE id_usuario = $1",
     "get_profile_permissions": "SELECT o.id_opcion, des_opcion AS opcion FROM opcion o INNER JOIN perfil_opcion po ON o.id_opcion = po.id_opcion WHERE po.id_perfil = $1",
     "get_profiles": "SELECT id_perfil, des_perfil AS perfil FROM perfil",
-    "get_users": "SELECT id_usuario, email_usuario, p.id_perfil, des_perfil FROM usuario u INNER JOIN perfil p ON u.id_perfil = p.id_perfil ORDER BY u.id_perfil",
+    "get_users": "SELECT id_usuario, nom_usuario, email_usuario, p.id_perfil, des_perfil FROM usuario u INNER JOIN perfil p ON u.id_perfil = p.id_perfil ORDER BY u.id_perfil",
     "assign_profile_to_user": "UPDATE usuario SET id_perfil = $2 WHERE id_usuario = $1 RETURNING *",
     "give_permission_to_profile": "INSERT INTO perfil_opcion (id_perfil, id_opcion) VALUES ($1, $2)",
     "remove_permission_from_profile": "DELETE FROM perfil_opcion WHERE id_perfil = $1 AND id_opcion = $2"
