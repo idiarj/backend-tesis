@@ -74,8 +74,8 @@ export class AuthController {
                 userData = restData;
                 const token = Token.generateToken({payload: userData ?? {}, secret: server_config.ACCESS_TOKEN_SECRET ?? "", options: {expiresIn: '3h'}})
 
-                let sameSite: 'lax' | 'strict' | 'none' = server_config.NODE_ENV === 'production' ? 'none' : 'lax';
-                let secure: boolean = server_config.NODE_ENV === 'production';
+                let sameSite: 'lax' | 'strict' | 'none' = server_config.NODE_ENV === 'cloud' ? 'none' : 'lax';
+                let secure: boolean = server_config.NODE_ENV === 'cloud';
 
                 logger.debug(`Setting cookie for user ${identifier_usuario}: ${JSON.stringify({ token, maxAge: 60 * 60 * 60 * 3, sameSite, secure })}`);
                 res.cookie('access_token', token, {
