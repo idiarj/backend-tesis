@@ -70,7 +70,10 @@ export class AnimalController {
 
     static async MySponsorhipsGET(req: Request, res: Response, next: NextFunction) {
         try {
-
+            const { id_usuario } = req.user as { id_usuario: number };
+            logger.info(`MySponsorhipsGET called by user ${id_usuario}`);
+            const result = await AnimalService.getMySponsorhips({id_usuario})
+            res.status(200).json(result);
         } catch (error) {
             next(error);
         }

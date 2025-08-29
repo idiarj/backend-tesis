@@ -11,11 +11,11 @@ export type FolderImage = {
 const logger = getLogger('ImageService');
 
 class ImageService {
-  static async uploadImage({filePath, catId}: {filePath: string, catId: string}): Promise<UploadApiResponse | undefined> {
+  static async uploadImage({filePath, catId}: {filePath: string, catId: number}): Promise<UploadApiResponse | undefined> {
     try {
       logger.debug(`Uploading image at path: ${filePath}`);
       const result = await cloudinary.uploader.upload(filePath, {
-        folder: 'gatoFeliz/icons',
+        folder: 'gatoFeliz/gatos',
         tags: ['gatoFeliz'],
         public_id: catId ? `cat_${catId}` : undefined,
       });

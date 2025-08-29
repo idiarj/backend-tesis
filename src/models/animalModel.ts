@@ -156,7 +156,7 @@ export class AnimaModel{
             const params = [id_usuario];
             const result = await db.executeQuery<Animal>({queryKey: key, params})
             if(!result.rows || result.rows.length === 0){
-                return null;
+                return [];
             }
             return result.rows;
         } catch (error) {

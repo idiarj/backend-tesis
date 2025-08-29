@@ -30,17 +30,27 @@ export class RequestModel{
 
     
     static async acceptAnimalRequest({id_acogida}: {id_acogida: number}): Promise<AnimalRequest | null>{
+        const client = await db.beginTransaction();
         try {
             const result = await db.executeQuery<AnimalRequest>({
                 queryKey: 'accept_animal_request',
-                params: [id_acogida]
+                params: [id_acogida],
+                client
             });
             if(!result.rows || result.rows.length === 0){
+                await db.rollbackTransaction(client);
                 return null;
             }
+            await db.executeRawQuery({
+                query: `UPDATE animal SET acogido = true WHERE id_animal = $1;`,
+                params: [result.rows[0].id_animal],
+                client
+            })
+            await db.commitTransaction(client);
             logger.info(`Animal request with ID ${id_acogida} accepted successfully`)
             return result.rows[0];
         } catch (error) {
+            await db.rollbackTransaction(client);
             if(error instanceof DatabaseError){
                 throw error
             }else if(error instanceof Error){
@@ -138,6 +148,7 @@ export class RequestModel{
     }
 
     static async checkRequest({id_user, id_animal}: {id_user: number, id_animal: number}): Promise<AnimalRequest | null>{
+        
         try {
             logger.info('Checking if the actual user already has a request for this animal...');
             const result = await db.executeQuery<AnimalRequest>({
