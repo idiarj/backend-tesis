@@ -1,4 +1,3 @@
-import { getLogger } from "../utils/logger.js";
 import { pgManager } from "../database/pgManager.js";
 import { db_config } from "../configs/config.js";
 
@@ -21,4 +20,6 @@ const config = db_config.DEPLOYED_DB_FLAG ? deployedConfig : localConfig;
 export const db = new pgManager({
     querys: db_config.DB_QUERYS,
     config
-});  
+});
+
+

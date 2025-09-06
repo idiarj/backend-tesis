@@ -18,7 +18,7 @@ export const authorizationMidd =
     logger.debug(`User with profile ${user?.perfil} is trying to access a resource that requires one of the following roles: ${allowedRoles.join(', ')}`);
 
     if (
-      user && allowedRoles.includes(user.perfil)
+      user && user.perfil && allowedRoles.includes(user.perfil)
     ) {
       next();
     } else {

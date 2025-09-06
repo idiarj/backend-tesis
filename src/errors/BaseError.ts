@@ -9,6 +9,6 @@ export class BaseError extends Error {
         this.name = "BaseError";
         this.statusCode = statusCode;
         Error.captureStackTrace(this);
-        Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+        Object.setPrototypeOf(this, new.target.prototype);
     }
 }

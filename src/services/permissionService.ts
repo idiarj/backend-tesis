@@ -19,9 +19,9 @@ export class PermissionService {
         };
     }
 
-    static async getUsers() {
+    static async getUsers({currentUserId}: {currentUserId: number}) {
         logger.info(`Fetching users from database...`);
-        const users = await UserModel.getUsers();
+        const users = await UserModel.getUsers({currentUserId});
         logger.debug(`Users fetched: ${JSON.stringify(users)}`);
         return {
             success: true,

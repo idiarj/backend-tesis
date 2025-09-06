@@ -7,7 +7,6 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Carpeta temporal para guardar archivos
 const tempDir = path.join(__dirname, '../temp');
 
 if (!fs.existsSync(tempDir)) {
@@ -25,3 +24,5 @@ const storage = multer.diskStorage({
 });
 
 export const upload = multer({ storage });
+
+

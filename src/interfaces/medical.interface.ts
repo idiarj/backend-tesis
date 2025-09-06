@@ -1,0 +1,37 @@
+export interface Caso {
+	id_caso?: number;
+	des_caso: string;
+	id_usuario: number;
+	id_animal: number;
+	id_caso_est: number;
+	sexo_animal_caso: string;
+	especie_animal_caso: string;
+	edad_animal_caso: string;
+	senas_caso: string;
+	motivo_caso: string;
+	historia_caso: string;
+	dieta_caso: string;
+	vacunacion_caso: string;
+	desp_caso: string;
+	prod_caso: string;
+	fechas_caso: string;
+	estado_repr: string;
+	proc_caso: string;
+	peso_animal_caso: string;
+	temperatura_animal_caso: string;
+	fcar_animal_caso: string;
+	fres_animal_caso: string;
+	tllc_animal_caso: string;
+	mucosas_animal_caso: string;
+	turg_piel_animal_caso: string;
+	pulso_animal_caso: string;
+	otras_animal_caso: string;
+	anamnesis_caso: string;
+	enfer_ante_animal_caso: string;
+    fecha_agregado_caso: string;
+    hora_agregado_caso: string;
+	id_kennel: number;
+	nom_animal_caso: string;
+	nom_dueno_caso: string;
+	tlf_dueno_caso: string;
+}

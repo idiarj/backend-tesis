@@ -1,14 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import { getLogger } from "../utils/logger.js";
 import { PermissionService } from "../services/permissionService.js";
-
+import { ForbiddenError } from "../errors/ForbiddenError.js";
 const logger = getLogger("ADMIN_CONTROLLER");
 
 export class AdminController {
     static async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
+            logger.debug(`User info from request: ${JSON.stringify(req.user)}`);
+            const { id_usuario } = req.user!;
+            logger.debug(`Current user ID: ${id_usuario}`);
             logger.info('getUsers called');
-            const result = await PermissionService.getUsers();
+            if (!id_usuario) {
+                throw new ForbiddenError('No se pudo identificar al usuario actual.', 403, 'Current user ID is missing.');
+            }
+            const result = await PermissionService.getUsers({ currentUserId: id_usuario });
             res.status(200).json(result);
         } catch (error) {
             next(error);

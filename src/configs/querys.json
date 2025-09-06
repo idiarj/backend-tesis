@@ -13,7 +13,7 @@
     "insertAnimal": "INSERT INTO animal (nom_animal, especie_animal, edad_animal, genero_animal, peso_animal, adoptable_animal) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
     "getAnimals": "SELECT * FROM animal WHERE acogido = false",
     "getAdoptableAnimals": "SELECT * FROM animal WHERE adoptable_animal = $1 AND acogido = false",
-    "get_last_cat": "SELECT nom_animal FROM gato WHERE adoptable_animal = $1 BY agregado_a DESC LIMIT 1;",
+    "get_last_cat": "SELECT * FROM animal WHERE adoptable_animal = $1 ORDER BY agregado_a DESC LIMIT 1;",
     "getAnimalById": "SELECT * FROM animal WHERE id_animal = $1",
     "getAnimalsByUserId": "SELECT * FROM acogida INNER JOIN animal ON acogida.id_animal = animal.id_animal WHERE id_usuario = $1 AND acogida.id_tipo_acogida = 1",
     "updateAnimal": "",
@@ -28,8 +28,11 @@
     "get_user_profile": "SELECT perfil.id_perfil, des_perfil AS perfil FROM usuario INNER JOIN perfil ON usuario.id_perfil = perfil.id_perfil WHERE id_usuario = $1",
     "get_profile_permissions": "SELECT o.id_opcion, des_opcion AS opcion FROM opcion o INNER JOIN perfil_opcion po ON o.id_opcion = po.id_opcion WHERE po.id_perfil = $1",
     "get_profiles": "SELECT id_perfil, des_perfil AS perfil FROM perfil",
-    "get_users": "SELECT id_usuario, nom_usuario, email_usuario, p.id_perfil, des_perfil FROM usuario u INNER JOIN perfil p ON u.id_perfil = p.id_perfil ORDER BY u.id_perfil",
+    "get_users": "SELECT id_usuario, nom_usuario, email_usuario, p.id_perfil, des_perfil FROM usuario u INNER JOIN perfil p ON u.id_perfil = p.id_perfil WHERE u.id_usuario != $1  ORDER BY u.id_perfil",
     "assign_profile_to_user": "UPDATE usuario SET id_perfil = $2 WHERE id_usuario = $1 RETURNING *",
     "give_permission_to_profile": "INSERT INTO perfil_opcion (id_perfil, id_opcion) VALUES ($1, $2)",
-    "remove_permission_from_profile": "DELETE FROM perfil_opcion WHERE id_perfil = $1 AND id_opcion = $2"
+    "remove_permission_from_profile": "DELETE FROM perfil_opcion WHERE id_perfil = $1 AND id_opcion = $2",
+    "insert_medical_record": "INSERT INTO caso (des_caso, id_usuario, id_animal, id_caso_est, sexo_animal_caso, especie_animal_caso, edad_animal_caso, senas_caso, motivo_caso, historia_caso, dieta_caso, vacunacion_caso, desp_caso, prod_caso, fechas_caso, estado_repr, proc_caso, peso_animal_caso, temperatura_animal_caso, fcar_animal_caso, fres_animal_caso, tllc_animal_caso, mucosas_animal_caso, turg_piel_animal_caso, pulso_animal_caso, otras_animal_caso, anamnesis_caso, enfer_ante_animal_caso, fecha_agregado_caso, hora_agregado_caso, id_kennel, nom_animal_caso, nom_dueno_caso, tlf_dueno_caso, direccion_dueno_casa) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34) RETURNING *",
+    "select_all_medical_records": "SELECT id_caso, des_caso, usuario.id_usuario, nom_usuario AS veterinario, id_animal, id_caso_est, sexo_animal_caso, especie_animal_caso, edad_animal_caso, senas_caso, motivo_caso, historia_caso, dieta_caso, vacunacion_caso, desp_caso, prod_caso, fechas_caso, estado_repr, proc_caso, peso_animal_caso, temperatura_animal_caso, fcar_animal_caso, fres_animal_caso, tllc_animal_caso, mucosas_animal_caso, turg_piel_animal_caso, pulso_animal_caso, otras_animal_caso, anamnesis_caso, enfer_ante_animal_caso, fecha_agregado_caso, hora_agregado_caso, id_kennel, nom_animal_caso, nom_dueno_caso, tlf_dueno_caso FROM caso INNER JOIN usuario ON caso.id_usuario = usuario.id_usuario",
+    "select_kennels": "SELECT * FROM kennel"
 }

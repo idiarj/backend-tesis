@@ -9,6 +9,6 @@ authRouter.post("/login", AuthController.login);
 authRouter.post('/register', AuthController.register);
 authRouter.post("/logout", authenticationMidd,AuthController.logout);
 authRouter.post("/forgot-password", AuthController.verifyEmailForPasswordReset);
+authRouter.patch("/reset-password", AuthController.resetPassword);
 authRouter.get("/me", authenticationMidd, AuthController.getCurrentUser);
 authRouter.put('/', authenticationMidd, AuthController.updateUser)
-authRouter.patch("/reset-password", AuthController.resetPassword);

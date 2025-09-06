@@ -11,11 +11,11 @@ export class HashManager {
             log.debug("Hashing data...");
             log.debug(`Data to hash: ${data}`);
             const hashedData = await argon2.hash(data, {
-                                        memoryCost: 65536, // 64 MB
-                                        timeCost: 4, // 4 iterations
-                                        parallelism: 1, // 1 thread
-                                        hashLength: 32, // 32 bytes
-                                        type: argon2.argon2id, // Use Argon2id for better security
+                                        memoryCost: 65536,
+                                        timeCost: 4,
+                                        parallelism: 1,
+                                        hashLength: 32, 
+                                        type: argon2.argon2id, 
                                     });
             return hashedData;
         } catch (error) {
@@ -35,3 +35,4 @@ export class HashManager {
         }
     }
 }
+

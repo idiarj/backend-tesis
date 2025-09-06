@@ -292,10 +292,10 @@ export class UserModel {
         }
     }
 
-    static async getUsers(){
+    static async getUsers({currentUserId}: {currentUserId: number}): Promise<User[]> {
         try {
             const key = "get_users";
-            const result = await db.executeQuery({ queryKey: key, params: [] });
+            const result = await db.executeQuery({ queryKey: key, params: [currentUserId] });
             return result.rows;
         } catch (error) {
             if (error instanceof BaseError) {

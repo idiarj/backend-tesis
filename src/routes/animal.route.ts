@@ -11,6 +11,6 @@ animalRouter.post('/', authenticationMidd,  authorizationMidd(Perfil.VET_ADMIN, 
 animalRouter.get('/',  AnimalController.AllAnimalsGET);
 animalRouter.get('/sponsorships', authenticationMidd, AnimalController.MySponsorhipsGET);
 animalRouter.get('/last', AnimalController.getLastCat)
-animalRouter.get('/:id_animal', AnimalController.AnimalDetailGET);
-animalRouter.put('/', authenticationMidd, AnimalController.AnimalPUT);
 animalRouter.delete('/:id_animal', authenticationMidd, authorizationMidd(Perfil.VET_ADMIN, Perfil.ADMIN), AnimalController.AnimalDELETE);
+// animalRouter.get('/:id_animal', AnimalController.AnimalDetailGET);
+// animalRouter.put('/', authenticationMidd, AnimalController.AnimalPUT);
