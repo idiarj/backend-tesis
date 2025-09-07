@@ -6,10 +6,10 @@ import { Perfil } from "../interfaces/authorization.interface.js";
 
 export const medicalRouter = Router();
 
-medicalRouter.post('/', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN), MedicalController.createMedicalRecord);
-medicalRouter.get('/', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN), MedicalController.getAllMedicalData);
-medicalRouter.get('/:id', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN), MedicalController.getMedicalRecordById);
-medicalRouter.put('/:id', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN), MedicalController.updateMedicalRecord);
+medicalRouter.post('/', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN, Perfil.VET), MedicalController.createMedicalRecord);
+medicalRouter.get('/', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN, Perfil.VET), MedicalController.getAllMedicalData);
+medicalRouter.get('/:id', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN, Perfil.VET), MedicalController.getMedicalRecordById);
+medicalRouter.put('/:id', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN, Perfil.VET), MedicalController.updateMedicalRecord);
 
 // medicalRouter.post('/', authenticationMidd, MedicalController.createMedicalRecord);
 // medicalRouter.get('/', authenticationMidd, MedicalController.getAllMedicalData);
