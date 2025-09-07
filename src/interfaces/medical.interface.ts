@@ -34,4 +34,7 @@ export interface Caso {
 	nom_animal_caso: string;
 	nom_dueno_caso: string;
 	tlf_dueno_caso: string;
+	direccion_dueno?: string;
+	ciudad_dueno?: string;
 }
+

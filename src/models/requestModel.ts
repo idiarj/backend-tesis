@@ -127,17 +127,27 @@ export class RequestModel{
     }
 
     static async deleteRequest({id_acogida}: {id_acogida: number}): Promise<boolean> {
+        let client = await db.beginTransaction();
         try {
             const result = await db.executeQuery({
                 queryKey: 'delete_animal_request',
-                params: [id_acogida]
+                params: [id_acogida],
+                client
             });
             if (result.rowCount === 0) {
                 throw new DatabaseError('Request not found', 404, 'No request found with the given ID');
             }
+            const id_animal = result.rows[0].id_animal;
+            await db.executeRawQuery({
+                query: `UPDATE animal SET acogido = false WHERE id_animal = $1;`,
+                params: [id_animal],
+                client
+            })
             logger.info(`Request with ID ${id_acogida} deleted successfully`);
+            await db.commitTransaction(client);
             return true;
         } catch (error) {
+            await db.rollbackTransaction(client);
             if (error instanceof DatabaseError) {
                 throw error;
             } else if (error instanceof Error) {

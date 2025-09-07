@@ -13,7 +13,7 @@ export class UserModel {
         try {
             logger.debug(`Inserting user ${nom_usuario} into the database...`);
             const key = "registerUser";
-            id_perfil = id_perfil || 3;
+            id_perfil = id_perfil || 5;
             const params = [img_usuario_url, nom_usuario, email_usuario, pwd_usuario, tlf_usuario, id_perfil];
             const result = await db.executeQuery({ queryKey: key, params });
             if (result.rows.length === 0) {
