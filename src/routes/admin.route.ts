@@ -8,9 +8,9 @@ import { Perfil } from "../interfaces/authorization.interface.js";
 export const adminRouter = Router();
 
 adminRouter.get('/profiles', AdminController.getProfiles);
-adminRouter.get('/users', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.VET), AdminController.getUsers);
-adminRouter.post('/assign-profile', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.VET), AdminController.assignProfile);
-adminRouter.post('/manage-permissions', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.VET), AdminController.managePermissionsForProfile);
+adminRouter.get('/users', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN), AdminController.getUsers);
+adminRouter.post('/assign-profile', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN), AdminController.assignProfile);
+adminRouter.post('/manage-permissions', authenticationMidd, authorizationMidd(Perfil.ADMIN, Perfil.VET_ADMIN, Perfil.SUPER_ADMIN), AdminController.managePermissionsForProfile);
 
 // adminRouter.get('/profiles',  AdminController.getProfiles);
 // adminRouter.get('/users', AdminController.getUsers);

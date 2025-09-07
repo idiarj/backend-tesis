@@ -18,6 +18,7 @@ export class MedicalController {
 
     static async getAllMedicalData(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
+            logger.info("Received request to fetch all medical data");
             const result = await MedicalService.getAllMedicalData();
             res.status(200).json(result);
         } catch (error) {
@@ -37,9 +38,15 @@ export class MedicalController {
 
     static async updateMedicalRecord(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
-            const id = parseInt(req.params.id);
-            const updates = req.body;
-            const result = await MedicalService.updateMedicalRecord(id, updates);
+            logger.info(`Received request to update medical record with ID: ${req.params.id} and body: ${JSON.stringify(req.body)}`);
+            const { id } = req.params;
+            const { newEstado, newInsumos, newTratamiento } = req.body;
+            const result = await MedicalService.updateMedicalRecord({ id: Number(id), newEstado, newInsumos, newTratamiento });
+            // const result = {
+            //     mock: true,
+            //     message: `Medical record with ID ${id} updated successfully`,
+            //     data: { id: Number(id), newEstado, newInsumos, newTratamiento }
+            // }
             res.status(200).json(result);
         } catch (error) {
             next(error);

@@ -119,15 +119,16 @@ export class MedicalModel {
     }
 
 
-    static async updateMedicalRecord(id: number, updates: {}): Promise<any> {
+    static async updateMedicalRecord({id, newEstado, newInsumos, newTratamiento}: {id: number, newEstado: string, newInsumos: string, newTratamiento: string}): Promise<any> {
         try {
+            logger.debug(`Updating medical record with ID: ${id} with data: ${JSON.stringify({ newEstado, newInsumos, newTratamiento })}`);
             const queryKey = "update_medical_record";
-            const params = [id, updates];
+            const params = [id, newEstado, newInsumos, newTratamiento];
             const result = await db.executeQuery({
                 queryKey,
                 params
             });
-            return result;
+            return result.rows?.[0];
         } catch (error) {
             logger.error("Error updating medical record", error);
             if (error instanceof DatabaseError) {
